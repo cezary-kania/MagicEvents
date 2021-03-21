@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using MagicEvents.CRUD.Service.Application;
 using MagicEvents.CRUD.Service.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,10 @@ namespace MagicEvents.CRUD.Service.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MagicEvents.CRUD.Service.Api", Version = "v1" });
             });
+
+            services.AddControllersWithViews()
+                .AddFluentValidation();
+                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

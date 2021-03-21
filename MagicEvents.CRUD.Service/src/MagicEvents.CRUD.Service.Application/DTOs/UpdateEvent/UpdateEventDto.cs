@@ -1,6 +1,6 @@
 using System;
 
-namespace MagicEvents.CRUD.Service.Application.DTOs
+namespace MagicEvents.CRUD.Service.Application.DTOs.UpdateEvent
 {
     public class UpdateEventDto
     {

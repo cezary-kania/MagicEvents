@@ -1,6 +1,6 @@
 using System;
 
-namespace MagicEvents.CRUD.Service.Application.DTOs
+namespace MagicEvents.CRUD.Service.Application.DTOs.CreateEvent
 {
     public class CreateEventDto
     {

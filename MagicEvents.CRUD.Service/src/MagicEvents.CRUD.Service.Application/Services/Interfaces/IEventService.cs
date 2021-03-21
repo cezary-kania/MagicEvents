@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MagicEvents.CRUD.Service.Application.DTOs;
+using MagicEvents.CRUD.Service.Application.DTOs.CreateEvent;
+using MagicEvents.CRUD.Service.Application.DTOs.UpdateEvent;
 using MagicEvents.CRUD.Service.Domain.Entities;
 
 namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
