@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MagicEvents.CRUD.Service.Domain.Enums;
 using MagicEvents.CRUD.Service.Domain.ValueObjects;
 
@@ -7,7 +8,10 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
     public class Event
     {
         public Guid Id { get; protected set; }
+        public Guid OrganizerId { get; set; }
+        public List<Guid> ParticipantsIds { get; set;}
         public string Title { get; set; }
+        public string Description { get; set;}
         public EventThumbnail Thumbnail { get; protected set; }
         public DateTime StartsAt { get; set; }
         public DateTime EndsAt { get; set; }
@@ -17,10 +21,12 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
         {
         }
         
-        protected Event(Guid id, string title, DateTime startsAt, DateTime endsAt)
+        protected Event(Guid id, Guid organizerId, string title, string description, DateTime startsAt, DateTime endsAt)
         {
             Id = id;
+            OrganizerId = organizerId;
             Title = title;
+            Description = description;
             StartsAt = startsAt;
             EndsAt = EndsAt;
             Status = EventStatus.Open;
@@ -30,7 +36,7 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
             Thumbnail = EventThumbnail.Create(Id, thData);
         }
 
-        public static Event CreateEvent(Guid id, string title, DateTime startsAt, DateTime endsAt)
-            => new Event(id, title, startsAt, endsAt);
+        public static Event CreateEvent(Guid id, Guid organizerId, string title, string description, DateTime startsAt, DateTime endsAt)
+            => new Event(id, organizerId, title, description, startsAt, endsAt);
     }
 }
