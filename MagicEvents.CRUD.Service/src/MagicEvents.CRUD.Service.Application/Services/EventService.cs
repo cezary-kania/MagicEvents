@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using MagicEvents.CRUD.Service.Application.DTOs;
-using MagicEvents.CRUD.Service.Application.DTOs.CreateEvent;
-using MagicEvents.CRUD.Service.Application.DTOs.UpdateEvent;
+using MagicEvents.CRUD.Service.Application.DTOs.Events;
+using MagicEvents.CRUD.Service.Application.DTOs.Events.CreateEvent;
+using MagicEvents.CRUD.Service.Application.DTOs.Events.UpdateEvent;
 using MagicEvents.CRUD.Service.Application.Services.Interfaces;
 using MagicEvents.CRUD.Service.Domain.Repositories;
 using MagicEvents.CRUD.Service.Domain.Entities;
@@ -15,11 +15,13 @@ namespace MagicEvents.CRUD.Service.Application.Services
     public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public EventService(IMapper mapper, IEventRepository eventRepository)
+        public EventService(IMapper mapper, IEventRepository eventRepository, IUserRepository userRepository)
         {
             _mapper = mapper;
             _eventRepository = eventRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<EventDto>> GetAllEvents()
@@ -50,9 +52,17 @@ namespace MagicEvents.CRUD.Service.Application.Services
 
         public async Task CreateEvent(Guid eventId, CreateEventDto createEventDto)
         {
+            var organizerId = createEventDto.OrganizerId;
+            var eventOrganizer = _userRepository.GetAsync(organizerId);
+            if(eventOrganizer is null)
+            {
+                throw new Exception($"Invalid organizer Id");
+            }
             var @event = Event.CreateEvent(
-                eventId, 
-                createEventDto.Title, 
+                eventId,
+                organizerId, 
+                createEventDto.Title,
+                createEventDto.Description, 
                 createEventDto.StartsAt,
                 createEventDto.EndsAt);
             await _eventRepository.CreateAsync(@event);
@@ -84,6 +94,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
         {
             await TryUpdateAsync(eventId, @event => {
                  @event.Title = updateEventDto.Title;
+                 @event.Description = updateEventDto.Description;
                  @event.StartsAt = updateEventDto.StartsAt;
                  @event.EndsAt = updateEventDto.EndsAt;
             });
