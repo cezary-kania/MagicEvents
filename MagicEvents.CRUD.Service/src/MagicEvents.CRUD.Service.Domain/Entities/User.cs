@@ -9,7 +9,7 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
         public Guid Id { get; protected set; }
         public UserIdentity Identity { get; set; }
         public UserProfile Profile { get; set; }
-        public List<EventActivity> EventActivities { get; set; }
+        public List<UserEventActivity> EventActivities { get; set; }
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
         public User(Guid id)

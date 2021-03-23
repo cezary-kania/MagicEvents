@@ -8,7 +8,7 @@ namespace MagicEvents.CRUD.Service.Application.Mappings
     {
         public EventProfile()
         {
-            CreateMap<Event, EventDto>();
+            CreateMap<Event,EventDto>();
         }
     }
 }

@@ -5,6 +5,6 @@ namespace MagicEvents.CRUD.Service.Domain.ValueObjects
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Informations { get; set; }
-        public byte[] Image { get; set; }
+        public UserProfileImage Image { get; set; }
     }
 }

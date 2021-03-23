@@ -5,6 +5,5 @@ namespace MagicEvents.CRUD.Service.Application.DTOs.Users
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Informations { get; set; }
-        public byte[] Image { get; set; }
     }
 }

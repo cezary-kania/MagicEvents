@@ -8,6 +8,6 @@ namespace MagicEvents.CRUD.Service.Application.DTOs.Users
         public Guid Id { get; set; }
         public UserIdentityDto Identity { get; set; }
         public UserProfileDto Profile { get; set; }
-        public IEnumerable<EventActivityDto> EventActivityHistory { get; set; }
+        public IEnumerable<UserEventActivityDto> EventActivityHistory { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
 {
     public interface IUserProfileService
     {
+        Task<byte[]> GetProfileImage(Guid userId);
         Task UpdateProfile(Guid userId, UpdateProfileDto profileDto);
         Task UpdatePhoto(Guid userId, byte[] imageData);
     }
