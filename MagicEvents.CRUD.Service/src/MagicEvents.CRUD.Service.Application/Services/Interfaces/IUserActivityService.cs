@@ -8,7 +8,6 @@ namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
     public interface IUserActivityService
     {
         Task<IEnumerable<UserEventActivityDto>> GetActivities(Guid userId);
-        Task RegisterEvent(Guid userId, Guid eventId, string userRole);
-        Task ChangeRole(Guid userId, Guid eventId, string userRole);
+        Task RegisterOnEvent(Guid userId, Guid eventId, string userRole);
     }
 }

@@ -7,9 +7,15 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
 {
     public class Event
     {
+        private Dictionary<Guid, string> _participantsIds 
+            = new Dictionary<Guid, string>();
         public Guid Id { get; protected set; }
         public Guid OrganizerId { get; set; }
-        public List<Guid> ParticipantsIds { get; set;}
+        public Dictionary<Guid, string> ParticipantsIds 
+        { 
+            get => _participantsIds;
+            set => _participantsIds = new Dictionary<Guid, string>(value);
+        }
         public string Title { get; set; }
         public string Description { get; set;}
         public EventThumbnail Thumbnail { get; protected set; }
@@ -21,7 +27,12 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
         {
         }
         
-        protected Event(Guid id, Guid organizerId, string title, string description, DateTime startsAt, DateTime endsAt)
+        protected Event(Guid id,
+                        Guid organizerId,
+                        string title,
+                        string description,
+                        DateTime startsAt,
+                        DateTime endsAt)
         {
             Id = id;
             OrganizerId = organizerId;
@@ -35,7 +46,10 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
         {
             Thumbnail = EventThumbnail.Create(Id, thData);
         }
-
+        public void AddParticipant(Guid userId, string role)
+        {
+            _participantsIds.Add(userId, role);
+        }
         public static Event CreateEvent(Guid id, Guid organizerId, string title, string description, DateTime startsAt, DateTime endsAt)
             => new Event(id, organizerId, title, description, startsAt, endsAt);
     }

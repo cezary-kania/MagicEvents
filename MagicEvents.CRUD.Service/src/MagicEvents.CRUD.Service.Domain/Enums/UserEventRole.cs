@@ -2,8 +2,8 @@ namespace MagicEvents.CRUD.Service.Domain.Enums
 {
     public class UserEventRole
     {
-        public static string Organizer => "Organizer";
-        public static string CoOrganizer => "Co-Organizer";
-        public static string Participant => "Participant";
+        public const string Organizer = "Organizer";
+        public const string CoOrganizer = "Co-Organizer";
+        public const string StandardParticipant = "StandardParticipant";
     }
 }
