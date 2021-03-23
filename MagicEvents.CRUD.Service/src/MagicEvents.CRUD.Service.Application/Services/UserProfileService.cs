@@ -1,25 +1,50 @@
 using System;
 using System.Threading.Tasks;
 using MagicEvents.CRUD.Service.Application.DTOs.Users.UpdateProfile;
+using MagicEvents.CRUD.Service.Application.Exceptions;
 using MagicEvents.CRUD.Service.Application.Services.Interfaces;
+using MagicEvents.CRUD.Service.Domain.Repositories;
 
 namespace MagicEvents.CRUD.Service.Application.Services
 {
     public class UserProfileService : IUserProfileService
     {
-        public Task<byte[]> GetProfileImage(Guid userId)
+        private readonly IUserRepository _userRepository;
+        public UserProfileService(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
+        }
+        public async Task<byte[]> GetProfileImage(Guid userId)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            CheckIfUserExists(user);
+            return user.Profile.Image.BinaryData;
         }
 
-        public Task UpdatePhoto(Guid userId, byte[] imageData)
+        public async Task UpdatePhoto(Guid userId, byte[] imageData)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetAsync(userId);
+            CheckIfUserExists(user);
+            user.Profile.Image.BinaryData = imageData;
+            await _userRepository.UpdateAsync(user); 
         }
 
-        public Task UpdateProfile(Guid userId, UpdateProfileDto profileDto)
+        public async Task UpdateProfile(Guid userId, UpdateProfileDto profileDto)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetAsync(userId);
+            CheckIfUserExists(user);
+            user.Profile.FirstName = profileDto.FirstName;
+            user.Profile.LastName = profileDto.LastName;
+            user.Profile.Informations = profileDto.Informations;
+            await _userRepository.UpdateAsync(user);
+        }
+
+        private static void CheckIfUserExists(Domain.Entities.User user)
+        {
+            if (user is null)
+            {
+                throw new ServiceException(ExceptionMessage.User.UserNotFound);
+            }
         }
     }
 }
