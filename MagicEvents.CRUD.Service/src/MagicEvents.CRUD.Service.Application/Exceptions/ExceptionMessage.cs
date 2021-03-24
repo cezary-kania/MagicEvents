@@ -11,6 +11,8 @@ namespace MagicEvents.CRUD.Service.Application.Exceptions
         {
             public const string EventNotFound = "Invalid event id";
             public const string InvalidEventRole = "Invalid event role";
+            public const string UserAlreadyRegisteredForEvent = "User has been already registerd on event";
+            public const string UserNotRegisteredForEvent = "User has been not registerd on event";
         }
     }
 }

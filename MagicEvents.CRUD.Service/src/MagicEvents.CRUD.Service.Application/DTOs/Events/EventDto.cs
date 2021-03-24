@@ -7,7 +7,7 @@ namespace MagicEvents.CRUD.Service.Application.DTOs.Events
     {
         public Guid Id { get; set; }
         public Guid OrganizerId { get; set; }
-        public IEnumerable<Guid> ParticipantsIds { get; set;}
+        public EventParticipantsDto Participants { get; set; }
         public string Title { get; set; }
         public string Description { get; set;}
         public DateTime StartsAt { get; set; }
