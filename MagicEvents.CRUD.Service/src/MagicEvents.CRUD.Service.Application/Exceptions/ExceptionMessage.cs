@@ -5,6 +5,8 @@ namespace MagicEvents.CRUD.Service.Application.Exceptions
         public static class User 
         {
             public const string UserNotFound = "Invalid user id";
+            public const string InvalidCredentials = "Invalid user email or password";
+            public const string EmailAlreadyUsed = "EmailAlreadyUsed";
             public const string InvalidRole = "Invalid user role";
         }
         public static class Event
