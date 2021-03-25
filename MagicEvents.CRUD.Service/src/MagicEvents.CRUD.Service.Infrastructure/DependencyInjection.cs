@@ -18,6 +18,7 @@ namespace MagicEvents.CRUD.Service.Infrastructure
             services.AddSingleton<IMongoDbSettings>(sp => 
                 sp.GetRequiredService<IOptions<MongoDbSettings>>().Value);
             services.AddScoped<IEventRepository,EventRepository>();
+            services.AddScoped<IUserRepository,UserRepository>();
             return services;
         }
     }
