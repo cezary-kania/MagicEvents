@@ -34,10 +34,6 @@ namespace MagicEvents.CRUD.Service.Application.Services
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
-            if(user.Profile is null) 
-            {
-                user.Profile = new UserProfile();
-            }
             user.Profile.FirstName = profileDto.FirstName;
             user.Profile.LastName = profileDto.LastName;
             user.Profile.Informations = profileDto.Informations;
