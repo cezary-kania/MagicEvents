@@ -26,6 +26,9 @@ namespace MagicEvents.CRUD.Service.Infrastructure.Repositories
         public async Task<User> GetAsync(Guid userId)
             => await _users.AsQueryable().FirstOrDefaultAsync(x => x.Id == userId);
 
+        public async Task<User> GetAsync(string userEmail)
+            => await _users.AsQueryable().FirstOrDefaultAsync(x => x.Identity.Email == userEmail);
+
         public async Task UpdateAsync(User user)
             => await _users.ReplaceOneAsync(x => x.Id == user.Id, user);
     }
