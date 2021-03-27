@@ -18,10 +18,10 @@ namespace MagicEvents.CRUD.Service.Api.Controllers.User
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
-            => Ok(await _userIdentityService.Register(registerUserDto));
+            => Ok(await _userIdentityService.RegisterAsync(registerUserDto));
 
         [HttpPost("login")]
         public async Task<IActionResult> Register(LoginUserDto loginUserDto)
-            => Ok(await _userIdentityService.Login(loginUserDto));
+            => Ok(await _userIdentityService.LoginAsync(loginUserDto));
     }
 }

@@ -17,12 +17,12 @@ namespace MagicEvents.CRUD.Service.Api.Controllers.Event
 
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
-            => Ok(await _eventService.GetAllEvents());
+            => Ok(await _eventService.GetAllEventsAsync());
 
         [HttpGet("{eventId}")]
         public async Task<IActionResult> GetEvent([FromRoute]Guid eventId)
         {
-            var e = await _eventService.GetEvent(eventId);
+            var e = await _eventService.GetEventAsync(eventId);
             if(e is null) return NotFound();
             return Ok(e);
         }
@@ -30,7 +30,7 @@ namespace MagicEvents.CRUD.Service.Api.Controllers.Event
         [HttpGet("{eventId}/thumbnail")]
         public async Task<IActionResult> GetThumbnail([FromRoute]Guid eventId)
         {
-            var thumbnail = await _eventService.GetEventThumbnail(eventId);
+            var thumbnail = await _eventService.GetEventThumbnailAsync(eventId);
             if(thumbnail is null) return NotFound();
             string thData = Convert.ToBase64String(thumbnail);
             thData = $"data:image/jpg;base64,{thData}";

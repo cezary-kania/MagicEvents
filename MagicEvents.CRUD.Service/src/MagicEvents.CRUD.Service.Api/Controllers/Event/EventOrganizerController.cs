@@ -1,15 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using MagicEvents.CRUD.Service.Api.Common;
+using MagicEvents.CRUD.Service.Application.DTOs.Events.AddCoOrganizer;
 using MagicEvents.CRUD.Service.Application.DTOs.Events.CreateEvent;
 using MagicEvents.CRUD.Service.Application.DTOs.Events.UpdateEvent;
 using MagicEvents.CRUD.Service.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicEvents.CRUD.Service.Api.Controllers.Event
 {
-    public class EventOrganizerController : ControllerBase
+    [Authorize]
+    [ApiController]
+    [Route("[controller]")]
+    public class EventOrganizerController : SecuredControllerBase
     {
         private readonly IEventOrganizerService _eventOrganizerService;
         public EventOrganizerController(IEventOrganizerService eventOrganizerService)
@@ -20,21 +25,29 @@ namespace MagicEvents.CRUD.Service.Api.Controllers.Event
         public async Task<IActionResult> CreateEvent([FromBody]CreateEventDto createEventDto)
         {
             var eventId = Guid.NewGuid();
-            await _eventOrganizerService.CreateEvent(eventId, createEventDto);
-            return Created($"/Event/{eventId}", null);
+            await _eventOrganizerService.CreateEventAsync(eventId, UserId, createEventDto);
+            var locationUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}/Event/{eventId}";
+            return Created(locationUrl, null);
+        }
+
+        [HttpPost("{eventId}/coorganizers")]
+        public async Task<IActionResult> AddCoOrganizer([FromRoute]Guid eventId, [FromBody]AddCoOrganizerDto addCoOrganizerDto)
+        {
+            await _eventOrganizerService.AddCoOrganizerAsync(eventId, addCoOrganizerDto.UserId, UserId);
+            return NoContent();
         }
 
         [HttpPut("{eventId}")]
         public async Task<IActionResult> UpdateEvent([FromRoute]Guid eventId, [FromBody]UpdateEventDto updateEventDto)
         {
-            await _eventOrganizerService.UpdateEvent(eventId, updateEventDto);
+            await _eventOrganizerService.UpdateEventAsync(eventId, UserId, updateEventDto);
             return NoContent();
         }
 
         [HttpPatch("{eventId}/cancel")]
         public async Task<IActionResult> CancelEvent([FromRoute] Guid eventId)
         {
-            await _eventOrganizerService.CancelEvent(eventId);
+            await _eventOrganizerService.CancelEventAsync(eventId, UserId);
             return NoContent();
         }
 
@@ -43,7 +56,7 @@ namespace MagicEvents.CRUD.Service.Api.Controllers.Event
         {
             //TODO: Add image validation and normalization (required content-type: image/jpeg)
             var binaryData = await FileConverter.ConvertToByteArray(file);
-            await _eventOrganizerService.SetThumbnail(eventId, binaryData);
+            await _eventOrganizerService.SetThumbnailAsync(eventId, UserId, binaryData);
             return NoContent();
         }
     }
