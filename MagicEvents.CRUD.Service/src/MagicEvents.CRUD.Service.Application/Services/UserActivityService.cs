@@ -26,7 +26,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             _eventRepository = eventRepository;
         }
 
-        public async Task<IEnumerable<UserEventActivityDto>> GetActivities(Guid userId)
+        public async Task<IEnumerable<UserEventActivityDto>> GetActivitiesAsync(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);
             if(user is null)
@@ -36,26 +36,30 @@ namespace MagicEvents.CRUD.Service.Application.Services
             return _mapper.Map<IEnumerable<UserEventActivityDto>>(user.EventActivities);
         }
 
-        public async Task RegisterOnEvent(Guid userId, Guid eventId, string userRole)
+        public async Task RegisterOnEventAsync(Guid userId, Guid eventId)
         {
-            User user = await TryGetUser(userId);
-            Event @event = await TryGetEvent(eventId);
+            var user = await TryGetUser(userId);
+            var @event = await TryGetEvent(eventId);
 
-            if (user.IsRegisteredForEvent(eventId))
+            if (user.IsRegisteredForEvent(eventId) 
+                || @event.IsOrganizer(userId)
+                || @event.Participants.IsCoOrganizer(userId)
+                || @event.Participants.IsStandardParticipant(userId))
             {
                 throw new ServiceException(ExceptionMessage.Event.UserAlreadyRegisteredForEvent);
             }
 
-            user.AddToActivities(eventId, userRole);
-            @event.AddParticipant(userId, userRole);
+            user.AddToActivities(eventId, UserEventRole.StandardParticipant);
+            @event.AddParticipant(userId, UserEventRole.StandardParticipant);
             await _userRepository.UpdateAsync(user);
             await _eventRepository.UpdateAsync(@event);
         }
 
-        public async Task RemoveFromEvent(Guid userId, Guid eventId)
+        public async Task LeaveEventAsync(Guid userId, Guid eventId)
         {
-            User user = await TryGetUser(userId);
-            Event @event = await TryGetEvent(eventId);
+            //TODO: Change removing to shadow leaving
+            var user = await TryGetUser(userId);
+            var @event = await TryGetEvent(eventId);
 
             if (!user.IsRegisteredForEvent(eventId))
             {
@@ -85,18 +89,6 @@ namespace MagicEvents.CRUD.Service.Application.Services
                 throw new ServiceException(ExceptionMessage.Event.EventNotFound);
             }
             return @event;
-        }
-
-        private void ValidateRole(string role)
-        {
-            List<string> allowedRoles = typeof(UserEventRole).GetFields()
-                .Where(x => x.Name != UserEventRole.Organizer)
-                .Select(x => x.GetValue(null).ToString())
-                .ToList();
-            if(!allowedRoles.Contains(role))
-            {
-                throw new ServiceException(ExceptionMessage.Event.InvalidEventRole);
-            }
         }
     }
 }

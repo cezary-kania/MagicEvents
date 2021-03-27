@@ -2,12 +2,16 @@ namespace MagicEvents.CRUD.Service.Application.Exceptions
 {
     public static class ExceptionMessage
     {
+        public static class Org {
+            public const string UknownError = "Unkown error occured";
+        }
         public static class User 
         {
             public const string UserNotFound = "Invalid user id";
             public const string InvalidCredentials = "Invalid user email or password";
             public const string EmailAlreadyUsed = "EmailAlreadyUsed";
             public const string InvalidRole = "Invalid user role";
+            public const string NoPermissionForOp = "Forbidden";
         }
         public static class Event
         {
