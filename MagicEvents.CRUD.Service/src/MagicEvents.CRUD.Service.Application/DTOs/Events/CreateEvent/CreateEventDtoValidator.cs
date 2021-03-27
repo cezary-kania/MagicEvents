@@ -7,9 +7,6 @@ namespace MagicEvents.CRUD.Service.Application.DTOs.Events.CreateEvent
     {
         public CreateEventDtoValidator()
         {
-            RuleFor(x => x.OrganizerId)
-                .NotEmpty()
-                .WithMessage("Invalid OrganizerId");
             RuleFor(x => x.Title)
                 .NotEmpty()
                 .WithMessage($"Title can't be blank")
