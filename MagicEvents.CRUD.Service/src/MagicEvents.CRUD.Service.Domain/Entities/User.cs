@@ -13,11 +13,12 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
         public List<UserEventActivity> EventActivities { get; set; }
         public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
-        public User(Guid id, UserIdentity identity, UserProfile profile = null)
+        public User(Guid id, UserIdentity identity = null, UserProfile profile = null)
         {
-            Id = Guid.NewGuid();
-            Identity = identity;
+            Id = id;
+            Identity = identity ?? new UserIdentity();
             Profile = profile ?? new UserProfile();
+            EventActivities = new List<UserEventActivity>();
             CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
