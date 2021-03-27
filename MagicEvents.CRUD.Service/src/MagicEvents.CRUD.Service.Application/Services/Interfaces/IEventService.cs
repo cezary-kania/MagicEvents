@@ -10,8 +10,8 @@ namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
 {
     public interface IEventService
     {
-        Task<EventDto> GetEvent(Guid id);
-        Task<byte[]> GetEventThumbnail(Guid id);
-        Task<IEnumerable<EventDto>> GetAllEvents();
+        Task<EventDto> GetEventAsync(Guid id);
+        Task<byte[]> GetEventThumbnailAsync(Guid id);
+        Task<IEnumerable<EventDto>> GetAllEventsAsync();
     }
 }

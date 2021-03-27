@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MagicEvents.CRUD.Service.Application.DTOs.Users.UpdateProfile;
 using MagicEvents.CRUD.Service.Application.Exceptions;
 using MagicEvents.CRUD.Service.Application.Services.Interfaces;
+using MagicEvents.CRUD.Service.Domain.Entities;
 using MagicEvents.CRUD.Service.Domain.Repositories;
 using MagicEvents.CRUD.Service.Domain.ValueObjects;
 
@@ -15,14 +16,14 @@ namespace MagicEvents.CRUD.Service.Application.Services
         {
             _userRepository = userRepository;
         }
-        public async Task<byte[]> GetProfileImage(Guid userId)
+        public async Task<byte[]> GetProfileImageAsync(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
             return user.Profile.Image.BinaryData;
         }
 
-        public async Task UpdatePhoto(Guid userId, byte[] imageData)
+        public async Task UpdateProfileImageAsync(Guid userId, byte[] imageData)
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
@@ -30,7 +31,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             await _userRepository.UpdateAsync(user); 
         }
 
-        public async Task UpdateProfile(Guid userId, UpdateProfileDto profileDto)
+        public async Task UpdateProfileAsync(Guid userId, UpdateProfileDto profileDto)
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
@@ -40,7 +41,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             await _userRepository.UpdateAsync(user);
         }
 
-        private static void CheckIfUserExists(Domain.Entities.User user)
+        private static void CheckIfUserExists(User user)
         {
             if (user is null)
             {

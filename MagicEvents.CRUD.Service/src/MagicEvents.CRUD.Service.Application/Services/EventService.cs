@@ -24,13 +24,13 @@ namespace MagicEvents.CRUD.Service.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<EventDto>> GetAllEvents()
+        public async Task<IEnumerable<EventDto>> GetAllEventsAsync()
         {
             var events = await _eventRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<EventDto>>(events);
         }
 
-        public async Task<EventDto> GetEvent(Guid id)
+        public async Task<EventDto> GetEventAsync(Guid id)
         {
             var @event = await _eventRepository.GetAsync(id);
             if(@event is null)
@@ -40,7 +40,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             return _mapper.Map<EventDto>(@event);
         }
 
-        public async Task<byte[]> GetEventThumbnail(Guid id)
+        public async Task<byte[]> GetEventThumbnailAsync(Guid id)
         {
             var @event = await _eventRepository.GetAsync(id);
             if(@event is null)

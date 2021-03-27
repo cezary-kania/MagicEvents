@@ -17,7 +17,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             _mapper = mapper;
             _userRepository = userRepository;
         }
-        public async Task<UserDto> Get(Guid userId)
+        public async Task<UserDto> GetAsync(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);
             if(user is null)

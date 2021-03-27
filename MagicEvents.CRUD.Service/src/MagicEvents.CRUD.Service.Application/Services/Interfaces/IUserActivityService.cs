@@ -7,8 +7,8 @@ namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
 {
     public interface IUserActivityService
     {
-        Task<IEnumerable<UserEventActivityDto>> GetActivities(Guid userId);
-        Task RegisterOnEvent(Guid userId, Guid eventId, string userRole);
-        Task RemoveFromEvent(Guid userId, Guid eventId);
+        Task<IEnumerable<UserEventActivityDto>> GetActivitiesAsync(Guid userId);
+        Task RegisterOnEventAsync(Guid userId, Guid eventId);
+        Task LeaveEventAsync(Guid userId, Guid eventId);
     }
 }

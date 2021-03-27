@@ -7,8 +7,8 @@ namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
 {
     public interface IUserIdentityService
     {
-        Task<AuthTokenDto> Register(RegisterUserDto registerUserDto);
-        Task<AuthTokenDto> Login(LoginUserDto loginUserDto);
+        Task<AuthTokenDto> RegisterAsync(RegisterUserDto registerUserDto);
+        Task<AuthTokenDto> LoginAsync(LoginUserDto loginUserDto);
 
         // TODO: Add Token Refreshing 
         // TODO: Add Facebook Auth

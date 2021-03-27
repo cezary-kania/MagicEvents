@@ -7,10 +7,14 @@ namespace MagicEvents.CRUD.Service.Application.Services.Interfaces
 {
     public interface IEventOrganizerService
     {
-        Task CancelEvent(Guid id);
-        Task SetThumbnail(Guid eventId, byte[] thumbnail);
-        Task CreateEvent(Guid eventId, CreateEventDto createEventDto);
-        Task UpdateEvent(Guid eventId, UpdateEventDto updateEventDto);
-        Task DeleteEvent(Guid id);
+        Task CancelEventAsync(Guid id, Guid userId);
+        Task SetThumbnailAsync(Guid eventId, Guid userId, byte[] thumbnail);
+        Task CreateEventAsync(Guid eventId, Guid organizerId, CreateEventDto createEventDto);
+        Task UpdateEventAsync(Guid eventId, Guid userId, UpdateEventDto updateEventDto);
+        Task DeleteEventAsync(Guid id, Guid userId);
+        Task AddCoOrganizerAsync(Guid eventId, Guid userId, Guid organizerId);
+        Task RemoveUserFromEventAsync(Guid eventId, Guid userId);
+        //TODO: Add banning
+        //TODO : Add "Delete coorganizer"
     }
 }

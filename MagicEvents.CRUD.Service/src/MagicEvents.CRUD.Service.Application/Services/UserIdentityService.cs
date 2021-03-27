@@ -25,7 +25,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             _jwtService = jwtService;
             _encryptService = encryptService;
         }
-        public async Task<AuthTokenDto> Login(LoginUserDto loginUserDto)
+        public async Task<AuthTokenDto> LoginAsync(LoginUserDto loginUserDto)
         {
             var user = await _userRepository.GetAsync(loginUserDto.Email);
             if(user is null || !_encryptService.ValidatePassword(user, loginUserDto.Password))
@@ -35,7 +35,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             return _jwtService.GenerateToken(user);
         }
 
-        public async Task<AuthTokenDto> Register(RegisterUserDto registerUserDto)
+        public async Task<AuthTokenDto> RegisterAsync(RegisterUserDto registerUserDto)
         {
             var user = await _userRepository.GetAsync(registerUserDto.Email);
             if(user is not null)
