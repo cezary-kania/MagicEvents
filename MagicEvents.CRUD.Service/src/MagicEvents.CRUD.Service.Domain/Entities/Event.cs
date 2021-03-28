@@ -29,7 +29,7 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
             Title = title;
             Description = description;
             StartsAt = startsAt;
-            EndsAt = EndsAt;
+            EndsAt = endsAt;
             Status = EventStatus.Open;
             Participants = new EventParticipants();
         }
