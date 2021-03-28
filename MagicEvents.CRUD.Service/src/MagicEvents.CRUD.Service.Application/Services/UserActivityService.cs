@@ -60,7 +60,10 @@ namespace MagicEvents.CRUD.Service.Application.Services
             //TODO: Change removing to shadow leaving
             var user = await TryGetUser(userId);
             var @event = await TryGetEvent(eventId);
-
+            if(@event.IsOrganizer(userId))
+            {
+                throw new ServiceException(ExceptionMessage.Event.OrgCantLeaveEvent);
+            }
             if (!user.IsRegisteredForEvent(eventId))
             {
                 throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
