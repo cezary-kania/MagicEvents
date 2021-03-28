@@ -1,5 +1,6 @@
 using MagicEvents.CRUD.Service.Domain.Repositories;
 using MagicEvents.CRUD.Service.Infrastructure.MongoDb;
+using MagicEvents.CRUD.Service.Infrastructure.MongoDb.Extensions;
 using MagicEvents.CRUD.Service.Infrastructure.MongoDb.Interfaces;
 using MagicEvents.CRUD.Service.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace MagicEvents.CRUD.Service.Infrastructure
                 sp.GetRequiredService<IOptions<MongoDbSettings>>().Value);
             services.AddScoped<IEventRepository,EventRepository>();
             services.AddScoped<IUserRepository,UserRepository>();
+            services.AddBsonClassMapping();
             return services;
         }
     }
