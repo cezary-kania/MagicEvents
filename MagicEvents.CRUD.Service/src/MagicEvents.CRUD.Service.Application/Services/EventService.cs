@@ -47,7 +47,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
             {
                 throw new Exception($"Event with id: '{id}' does not exist.");
             }
-            return @event.Thumbnail.BinaryData;
+            return @event.Thumbnail?.BinaryData;
         }
     }
 }
