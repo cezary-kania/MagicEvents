@@ -5,9 +5,9 @@ using MagicEvents.CRUD.Service.Domain.ValueObjects;
 
 namespace MagicEvents.CRUD.Service.Application.Mappings
 {
-    public class UserProfile : Profile
+    public class UserMapProfile : Profile
     {
-        public UserProfile()
+        public UserMapProfile()
         {
             CreateMap<User,UserDto>();
             CreateMap<UserEventActivity,UserEventActivityDto>();
