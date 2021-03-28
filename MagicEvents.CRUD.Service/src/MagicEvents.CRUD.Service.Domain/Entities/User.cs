@@ -41,7 +41,7 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
         public bool IsRegisteredForEvent(Guid eventId)
         {
             return EventActivities
-                .SingleOrDefault(x => x.EventId == eventId) is null;
+                .SingleOrDefault(x => x.EventId == eventId) is not null;
         }
     }
 }
