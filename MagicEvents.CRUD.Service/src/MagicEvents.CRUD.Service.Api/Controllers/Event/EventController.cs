@@ -32,10 +32,7 @@ namespace MagicEvents.CRUD.Service.Api.Controllers.Event
         {
             var thumbnail = await _eventService.GetEventThumbnailAsync(eventId);
             if(thumbnail is null) return NotFound();
-            string thData = Convert.ToBase64String(thumbnail);
-            thData = $"data:image/jpg;base64,{thData}";
             return File(thumbnail,"image/jpeg",$"event-{eventId}.jpg");
-            //return Ok(new {thSrc = thData}); // There're two different ways to send data - It has to be considered. 
         }
     }
 }
