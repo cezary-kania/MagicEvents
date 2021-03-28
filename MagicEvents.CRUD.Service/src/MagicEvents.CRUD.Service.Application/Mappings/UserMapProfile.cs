@@ -13,6 +13,7 @@ namespace MagicEvents.CRUD.Service.Application.Mappings
             CreateMap<UserEventActivity,UserEventActivityDto>();
             CreateMap<UserIdentity,UserIdentityDto>();
             CreateMap<UserProfile,UserProfileDto>();
+            CreateMap<UserProfile,UserProfileBaseDto>();
         }
     }
 }

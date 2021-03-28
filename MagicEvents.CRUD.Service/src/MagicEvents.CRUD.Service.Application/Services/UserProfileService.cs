@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using MagicEvents.CRUD.Service.Application.DTOs.Users;
 using MagicEvents.CRUD.Service.Application.DTOs.Users.UpdateProfile;
 using MagicEvents.CRUD.Service.Application.Exceptions;
 using MagicEvents.CRUD.Service.Application.Services.Interfaces;
@@ -11,10 +13,19 @@ namespace MagicEvents.CRUD.Service.Application.Services
 {
     public class UserProfileService : IUserProfileService
     {
+        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public UserProfileService(IUserRepository userRepository)
+        public UserProfileService(IMapper mapper, IUserRepository userRepository)
         {
+            _mapper = mapper;
             _userRepository = userRepository;
+        }
+
+        public async Task<UserProfileBaseDto> GetProfileAsync(Guid userId)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            CheckIfUserExists(user);
+            return _mapper.Map<UserProfileBaseDto>(user.Profile);
         }
         public async Task<byte[]> GetProfileImageAsync(Guid userId)
         {
@@ -27,7 +38,11 @@ namespace MagicEvents.CRUD.Service.Application.Services
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
-            user.Profile.Image.BinaryData = imageData;
+            user.Profile.Image = new UserProfileImage 
+            { 
+                UserId = userId, 
+                BinaryData = imageData
+            }; 
             await _userRepository.UpdateAsync(user); 
         }
 
