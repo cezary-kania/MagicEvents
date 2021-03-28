@@ -20,7 +20,7 @@ namespace MagicEvents.CRUD.Service.Application.Services
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
-            return user.Profile.Image.BinaryData;
+            return user.Profile.Image?.BinaryData;
         }
 
         public async Task UpdateProfileImageAsync(Guid userId, byte[] imageData)
