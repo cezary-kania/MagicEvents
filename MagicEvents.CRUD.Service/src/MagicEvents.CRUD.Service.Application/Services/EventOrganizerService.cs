@@ -51,16 +51,20 @@ namespace MagicEvents.CRUD.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
             }
-            if(@event.IsOrganizer(coOrganizerId) || (coOrganizer.IsRegisteredForEvent(eventId) 
-                && @event.Participants.IsCoOrganizer(coOrganizerId)))
+
+            if(@event.IsOrganizer(coOrganizerId) || @event.Participants.IsCoOrganizer(coOrganizerId))
             {
                 throw new ServiceException(ExceptionMessage.Event.UserAlreadyRegisteredForEvent);
             }
 
-            if(coOrganizer.IsRegisteredForEvent(eventId)
-                && !@event.Participants.IsStandardParticipant(coOrganizerId))
+            if(!coOrganizer.IsRegisteredForEvent(eventId))
             {
                 throw new ServiceException(ExceptionMessage.Org.UknownError);
+            }
+
+            if(@event.Participants.IsStandardParticipant(coOrganizerId))
+            {
+                @event.Participants.RemoveParticipant(coOrganizerId);     
             }
             
             coOrganizer.AddToActivities(eventId, UserEventRole.CoOrganizer);
