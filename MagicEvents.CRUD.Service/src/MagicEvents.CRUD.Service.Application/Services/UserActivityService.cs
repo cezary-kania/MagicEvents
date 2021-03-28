@@ -41,7 +41,12 @@ namespace MagicEvents.CRUD.Service.Application.Services
             var user = await TryGetUser(userId);
             var @event = await TryGetEvent(eventId);
 
-            if (user.IsRegisteredForEvent(eventId) 
+            if (!@event.IsOpenForRegistration())
+            {
+                throw new ServiceException(ExceptionMessage.Event.CantRegisterForEvent);
+            }
+
+            if (user.IsRegisteredForEvent(eventId)
                 || @event.IsOrganizer(userId)
                 || @event.Participants.IsCoOrganizer(userId)
                 || @event.Participants.IsStandardParticipant(userId))

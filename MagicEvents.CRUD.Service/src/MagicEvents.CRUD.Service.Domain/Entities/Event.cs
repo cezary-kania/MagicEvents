@@ -33,10 +33,12 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
             Status = EventStatus.Open;
             Participants = new EventParticipants();
         }
+
         public void SetThumbnail(byte[] thData)
         {
             Thumbnail = EventThumbnail.Create(Id, thData);
         }
+
         public void AddParticipant(Guid userId, string role)
         {
             Participants.AddParticipant(userId, role);
@@ -49,6 +51,9 @@ namespace MagicEvents.CRUD.Service.Domain.Entities
 
         public bool IsOrganizer(Guid userId) 
             => OrganizerId == userId;
+        
+        public bool IsOpenForRegistration()
+            => Status == EventStatus.Open;
 
         public static Event CreateEvent(Guid id, Guid organizerId, string title, string description, DateTime startsAt, DateTime endsAt)
             => new Event(id, organizerId, title, description, startsAt, endsAt);
