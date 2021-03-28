@@ -1,11 +1,15 @@
+using System.Net;
 using System.Text;
 using FluentValidation.AspNetCore;
 using MagicEvents.Api.Service.Api.Filters;
 using MagicEvents.Api.Service.Application;
 using MagicEvents.Api.Service.Application.Auth.interfaces;
+using MagicEvents.Api.Service.Application.Exceptions;
 using MagicEvents.Api.Service.Infrastructure;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,6 +69,24 @@ namespace MagicEvents.Api.Service.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MagicEvents.Api.Service.Api v1"));
             }
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var exception = exceptionHandlerPathFeature.Error;
+                
+                var statusCode = HttpStatusCode.InternalServerError;
+                var message = "Unknown error occured.";
+                var exceptionType = exception.GetType();
+                switch(exception)
+                {
+                    case ServiceException e when exceptionType == typeof(ServiceException):
+                        statusCode = HttpStatusCode.BadRequest;
+                        message = exception.Message;
+                        break;
+                }
+                context.Response.StatusCode = (int) statusCode;
+                await context.Response.WriteAsJsonAsync(new { error = message });
+            }));
 
             app.UseRouting();
             
