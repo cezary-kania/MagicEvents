@@ -64,7 +64,8 @@ namespace MagicEvents.CRUD.Service.Application.Services
 
             if(@event.Participants.IsStandardParticipant(coOrganizerId))
             {
-                @event.Participants.RemoveParticipant(coOrganizerId);     
+                @event.Participants.RemoveParticipant(coOrganizerId);
+                coOrganizer.RemoveActivity(eventId);     
             }
             
             coOrganizer.AddToActivities(eventId, UserEventRole.CoOrganizer);
