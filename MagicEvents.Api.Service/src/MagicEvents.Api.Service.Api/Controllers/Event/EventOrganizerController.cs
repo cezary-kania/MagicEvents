@@ -54,7 +54,6 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPatch("{eventId}/thumbnail")]
         public async Task<IActionResult> SetThumbnail([FromRoute] Guid eventId, [FromForm] IFormFile file)
         {
-            //TODO: Add image validation and normalization (required content-type: image/jpeg)
             var binaryData = await FileConverter.ConvertToByteArray(file);
             await _eventOrganizerService.SetThumbnailAsync(eventId, UserId, binaryData);
             return NoContent();

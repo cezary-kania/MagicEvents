@@ -9,8 +9,5 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
     {
         Task<AuthTokenDto> RegisterAsync(RegisterUserDto registerUserDto);
         Task<AuthTokenDto> LoginAsync(LoginUserDto loginUserDto);
-
-        // TODO: Add Token Refreshing 
-        // TODO: Add Facebook Auth
     }
 }

@@ -39,7 +39,6 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [HttpPatch("profileImage")]
         public async Task<IActionResult> UpdateProfileImage([FromForm] IFormFile file)
         {
-            //TODO: Add image validation and normalization (required content-type: image/jpeg)
             var binaryData = await FileConverter.ConvertToByteArray(file);
             await _userProfileService.UpdateProfileImageAsync(UserId, binaryData);
             return NoContent();

@@ -14,7 +14,5 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
         Task DeleteEventAsync(Guid id, Guid userId);
         Task AddCoOrganizerAsync(Guid eventId, Guid userId, Guid organizerId);
         Task RemoveUserFromEventAsync(Guid eventId, Guid userId);
-        //TODO: Add banning
-        //TODO : Add "Delete coorganizer"
     }
 }

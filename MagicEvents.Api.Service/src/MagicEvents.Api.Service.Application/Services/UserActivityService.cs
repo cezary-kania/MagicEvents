@@ -62,7 +62,6 @@ namespace MagicEvents.Api.Service.Application.Services
 
         public async Task LeaveEventAsync(Guid userId, Guid eventId)
         {
-            //TODO: Change removing to shadow leaving
             var user = await TryGetUser(userId);
             var @event = await TryGetEvent(eventId);
             if(@event.IsOrganizer(userId))

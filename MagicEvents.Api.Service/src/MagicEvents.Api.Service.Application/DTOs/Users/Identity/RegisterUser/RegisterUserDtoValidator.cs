@@ -10,7 +10,7 @@ namespace MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser
                 .NotEmpty()
                 .EmailAddress()
                 .WithMessage("Invalid email address");
-            int passwordLength = 8; // TODO: Add to appconfig.json as PasswordRules
+            int passwordLength = 8;
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .MinimumLength(passwordLength).WithMessage($"Passwortd must have at least {passwordLength} characters")
