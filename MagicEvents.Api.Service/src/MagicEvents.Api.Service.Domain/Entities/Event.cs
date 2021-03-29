@@ -17,6 +17,7 @@ namespace MagicEvents.Api.Service.Domain.Entities
         public DateTime EndsAt { get; set; }
         public string Status { get; set; }
         
+        protected Event() {} // Required for JsonConvert serialization
         protected Event(Guid id,
                         Guid organizerId,
                         string title,
