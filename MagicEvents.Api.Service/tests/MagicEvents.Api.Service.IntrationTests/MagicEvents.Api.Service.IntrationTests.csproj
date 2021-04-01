@@ -5,6 +5,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.json" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
