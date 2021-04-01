@@ -9,6 +9,7 @@ using MagicEvents.Api.Service.Application.Services.Interfaces;
 using MagicEvents.Api.Service.Domain.Repositories;
 using MagicEvents.Api.Service.Domain.Entities;
 using MagicEvents.Api.Service.Domain.Enums;
+using MagicEvents.Api.Service.Application.Exceptions;
 
 namespace MagicEvents.Api.Service.Application.Services
 {
@@ -33,10 +34,6 @@ namespace MagicEvents.Api.Service.Application.Services
         public async Task<EventDto> GetEventAsync(Guid id)
         {
             var @event = await _eventRepository.GetAsync(id);
-            if(@event is null)
-            {
-                throw new Exception($"Event with id: '{id}' does not exist.");
-            }
             return _mapper.Map<EventDto>(@event);
         }
 
@@ -45,7 +42,7 @@ namespace MagicEvents.Api.Service.Application.Services
             var @event = await _eventRepository.GetAsync(id);
             if(@event is null)
             {
-                throw new Exception($"Event with id: '{id}' does not exist.");
+                return null;
             }
             return @event.Thumbnail?.BinaryData;
         }
