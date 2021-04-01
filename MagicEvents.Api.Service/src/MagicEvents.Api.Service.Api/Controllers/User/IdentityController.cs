@@ -21,7 +21,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
             => Ok(await _userIdentityService.RegisterAsync(registerUserDto));
 
         [HttpPost("login")]
-        public async Task<IActionResult> Register(LoginUserDto loginUserDto)
+        public async Task<IActionResult> Login(LoginUserDto loginUserDto)
             => Ok(await _userIdentityService.LoginAsync(loginUserDto));
     }
 }
