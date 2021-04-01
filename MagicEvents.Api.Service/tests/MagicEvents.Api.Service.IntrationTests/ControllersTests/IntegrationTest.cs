@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace MagicEvents.Api.Service.IntrationTests.ControllerTests
+namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
 {
     public class IntegrationTest : IDisposable
     {
