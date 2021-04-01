@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MagicEvents.Api.Service.Domain.Entities;
 using MagicEvents.Api.Service.Domain.Repositories;
 
-namespace MagicEvents.Api.Service.IntrationTests.InMemoryRepositories
+namespace MagicEvents.Api.Service.Infrastructure.Repositories.InMemoryRepositories
 {
     public class InMemoryEventRepository : IEventRepository
     {
