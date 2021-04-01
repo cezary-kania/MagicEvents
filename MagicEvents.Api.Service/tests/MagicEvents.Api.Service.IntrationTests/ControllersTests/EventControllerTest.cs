@@ -12,7 +12,7 @@ using MagicEvents.Api.Service.IntrationTests.DataFactories;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace MagicEvents.Api.Service.IntrationTests
+namespace MagicEvents.Api.Service.IntrationTests.ControllerTests
 {
     public class EventControllerTest : IntegrationTest
     {
