@@ -44,12 +44,18 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             {
                 Task.Run(async () => await repository.DeleteAsync(@event.Id));
             }
+        }
+
+        protected async Task AuthenticateAsync(RegisterUserDto registerUserDto)
+        {
+            var token = await GetUserJWT(registerUserDto);
+            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }   
 
         protected async Task AuthenticateAsync()
         {
-            var token = await GetNewUserJWT();
-            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            var registerUserDto = UserTestDataFactory.CreateTestUser();
+            await AuthenticateAsync(registerUserDto);
         }
 
         protected void ClearAuthHeader()
@@ -65,12 +71,6 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var responseString = await response.Content.ReadAsStringAsync();
             var authTokenDto = JsonConvert.DeserializeObject<AuthTokenDto>(responseString);
             return authTokenDto.Token;
-        }    
-        private async Task<string> GetNewUserJWT()
-        {
-            var registerUserDto = UserTestDataFactory.CreateTestUser();
-            return await GetUserJWT(registerUserDto);
-        }        
-
+        }           
     }
 }
