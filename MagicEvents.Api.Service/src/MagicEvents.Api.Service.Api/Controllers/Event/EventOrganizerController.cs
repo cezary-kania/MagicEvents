@@ -22,6 +22,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
             _eventOrganizerService = eventOrganizerService;
         }
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> CreateEvent([FromBody]CreateEventDto createEventDto)
         {
             var eventId = Guid.NewGuid();
@@ -31,6 +33,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         }
 
         [HttpPost("{eventId}/coorganizers")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> AddCoOrganizer([FromRoute]Guid eventId, [FromBody]AddCoOrganizerDto addCoOrganizerDto)
         {
             await _eventOrganizerService.AddCoOrganizerAsync(eventId, addCoOrganizerDto.UserId, UserId);
@@ -38,6 +42,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         }
 
         [HttpPut("{eventId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> UpdateEvent([FromRoute]Guid eventId, [FromBody]UpdateEventDto updateEventDto)
         {
             await _eventOrganizerService.UpdateEventAsync(eventId, UserId, updateEventDto);
@@ -45,6 +51,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         }
 
         [HttpPatch("{eventId}/cancel")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> CancelEvent([FromRoute] Guid eventId)
         {
             await _eventOrganizerService.CancelEventAsync(eventId, UserId);
@@ -52,6 +60,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         }
 
         [HttpPatch("{eventId}/thumbnail")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> SetThumbnail([FromRoute] Guid eventId, [FromForm] IFormFile file)
         {
             var binaryData = await FileConverter.ConvertToByteArray(file);
