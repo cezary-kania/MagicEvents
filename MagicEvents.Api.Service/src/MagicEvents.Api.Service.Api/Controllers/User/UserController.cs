@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicEvents.Api.Service.Api.Controllers.User
@@ -17,6 +19,9 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         }
 
         [HttpGet("userData")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(UserDto), 200)]
+        [ProducesResponseType(typeof(object),404)]
         public async Task<IActionResult> GetUser()
         {
             var user = await _userService.GetAsync(UserId);
