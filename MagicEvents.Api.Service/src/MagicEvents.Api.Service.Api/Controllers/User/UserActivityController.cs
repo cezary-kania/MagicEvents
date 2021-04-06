@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicEvents.Api.Service.Api.Controllers.User
@@ -18,10 +21,15 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         }
 
         [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<UserEventActivityDto>), 200)]
+        [ProducesResponseType(typeof(object), 400)]
         public async Task<IActionResult> GetActivities()
             => Ok(await _userActivityService.GetActivitiesAsync(UserId));
 
         [HttpPost("{eventId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object), 400)]
         public async Task<IActionResult> RegisterOnEvent([FromRoute] Guid eventId)
         {
             await _userActivityService.RegisterOnEventAsync(UserId, eventId);
@@ -29,6 +37,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         }
 
         [HttpDelete("{eventId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object), 400)]
         public async Task<IActionResult> LeaveEvent([FromRoute] Guid eventId)
         {
             await _userActivityService.LeaveEventAsync(UserId, eventId);
