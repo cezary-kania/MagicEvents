@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using FluentValidation.AspNetCore;
@@ -42,9 +44,43 @@ namespace MagicEvents.Api.Service.Api
                     options.Filters.Add<ValidationFilter>();
                 })
                 .AddFluentValidation();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(x =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MagicEvents.Api.Service.Api", Version = "v1" });
+                x.SwaggerDoc("v1", new OpenApiInfo 
+                { 
+                    Title = "MagicEvents.Api", 
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Cezary Kania",
+                        Email = "cezary.kaniaq@gmail.com",
+                        Url = new Uri("https://cezary-kania.github.io")
+                    }
+                });
+
+                x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the bearer scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme 
+                        {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                        },
+                        new List<string>()
+                    }
+                });
+
             }); 
             var jwtSettings = services.BuildServiceProvider().GetRequiredService<IJwtSettings>();
             services.AddAuthentication("Bearer")
@@ -67,7 +103,7 @@ namespace MagicEvents.Api.Service.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MagicEvents.Api.Service.Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MagicEvents.Api v1"));
             }
             app.UseExceptionHandler(a => a.Run(async context =>
             {
