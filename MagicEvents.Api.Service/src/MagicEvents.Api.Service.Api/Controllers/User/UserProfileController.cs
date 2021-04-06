@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Api.Common;
+using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.DTOs.Users.UpdateProfile;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,9 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         }
 
         [HttpGet("{userId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(UserProfileBaseDto), 200)]
+        [ProducesResponseType(typeof(object),404)]
         public async Task<IActionResult> GetProfile([FromRoute]Guid userId)
         {
             var userProfile = await _userProfileService.GetProfileAsync(userId);
@@ -28,6 +32,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         }
 
         [HttpGet("{userId}/profileImage")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object),404)]
         public async Task<IActionResult> GetProfileImage([FromRoute]Guid userId)
         {
             var profileImage = await _userProfileService.GetProfileImageAsync(userId);
@@ -37,6 +43,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         
         [Authorize]
         [HttpPatch("profileImage")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> UpdateProfileImage([FromForm] IFormFile file)
         {
             var binaryData = await FileConverter.ConvertToByteArray(file);
@@ -46,6 +54,8 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
 
         [Authorize]
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> UpdateProfile([FromBody]UpdateProfileDto profileDto)
         {
             await _userProfileService.UpdateProfileAsync(UserId, profileDto);
