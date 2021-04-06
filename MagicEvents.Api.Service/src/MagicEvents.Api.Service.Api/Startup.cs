@@ -19,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace MagicEvents.Api.Service.Api
 {
@@ -44,6 +45,7 @@ namespace MagicEvents.Api.Service.Api
                     options.Filters.Add<ValidationFilter>();
                 })
                 .AddFluentValidation();
+
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new OpenApiInfo 
@@ -57,6 +59,8 @@ namespace MagicEvents.Api.Service.Api
                         Url = new Uri("https://cezary-kania.github.io")
                     }
                 });
+
+                x.ExampleFilters();
 
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -81,7 +85,8 @@ namespace MagicEvents.Api.Service.Api
                     }
                 });
 
-            }); 
+            });
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>(); 
             var jwtSettings = services.BuildServiceProvider().GetRequiredService<IJwtSettings>();
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(cfg => {
