@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using MagicEvents.Api.Service.Application.DTOs.Users.Identity;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.LoginUser;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
@@ -17,10 +18,16 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         }
 
         [HttpPost("register")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AuthTokenDto), 200)]
+        [ProducesResponseType(typeof(object), 400)]
         public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
             => Ok(await _userIdentityService.RegisterAsync(registerUserDto));
 
         [HttpPost("login")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AuthTokenDto), 200)]
+        [ProducesResponseType(typeof(object), 400)]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
             => Ok(await _userIdentityService.LoginAsync(loginUserDto));
     }
