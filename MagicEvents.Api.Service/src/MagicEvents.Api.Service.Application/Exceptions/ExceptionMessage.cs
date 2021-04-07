@@ -21,6 +21,7 @@ namespace MagicEvents.Api.Service.Application.Exceptions
             public const string UserNotRegisteredForEvent = "User has been not registerd on event";
             public const string OrgCantLeaveEvent = "Organizator can't leave event";
             public const string CantRegisterForEvent = "CantRegisterForEvent";
+            public const string EventHasFinished = "EventHasFinished";
         }
     }
 }

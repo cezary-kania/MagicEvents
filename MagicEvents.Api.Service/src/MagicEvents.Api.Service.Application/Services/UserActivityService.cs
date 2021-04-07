@@ -72,6 +72,10 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
             }
+            if(@event.Status == EventStatus.Finished)
+            {
+                throw new ServiceException(ExceptionMessage.Event.EventHasFinished);
+            }
             user.RemoveActivity(eventId);
             @event.RemoveParticipant(userId);
             await _userRepository.UpdateAsync(user);
