@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MagicEvents.Api.Service.Application.DTOs.Events.CreateEvent;
@@ -38,7 +40,8 @@ namespace MagicEvents.Api.Service.Application.Services
                 createEventDto.StartsAt,
                 createEventDto.EndsAt);
             await _eventRepository.CreateAsync(@event);
-            eventOrganizer.AddToActivities(eventId, UserEventRole.Organizer);
+            eventOrganizer.AddToActivities(eventId, UserEventRole.Organizer, 
+                EventActivityStatus.Active);
             await _userRepository.UpdateAsync(eventOrganizer);
         }
 
@@ -57,34 +60,59 @@ namespace MagicEvents.Api.Service.Application.Services
                 throw new ServiceException(ExceptionMessage.Event.UserAlreadyRegisteredForEvent);
             }
 
-            if(!coOrganizer.IsRegisteredForEvent(eventId))
-            {
-                throw new ServiceException(ExceptionMessage.Org.UknownError);
-            }
-
             if(@event.Participants.IsStandardParticipant(coOrganizerId))
             {
                 @event.Participants.RemoveParticipant(coOrganizerId);
                 coOrganizer.RemoveActivity(eventId);     
             }
             
-            coOrganizer.AddToActivities(eventId, UserEventRole.CoOrganizer);
+            coOrganizer.AddToActivities(eventId, UserEventRole.CoOrganizer, 
+                EventActivityStatus.Active);
             @event.AddParticipant(coOrganizerId, UserEventRole.CoOrganizer);
             await _userRepository.UpdateAsync(coOrganizer);
             await _eventRepository.UpdateAsync(@event);
         }
 
-        public async Task RemoveUserFromEventAsync(Guid eventId, Guid userId)
+        public async Task RemoveUserFromEventAsync(Guid eventId, Guid userId, Guid crewUserId)
         {
             var user = await TryGetUser(userId);
             var @event = await TryGetEvent(eventId);
-            
-            if (!user.IsRegisteredForEvent(eventId) && !@event.IsOrganizer(userId))
+            if(!@event.IsOrganizer(crewUserId) && !@event.IsCoOrganizer(crewUserId))
+            {
+                throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
+            }
+            if(@event.IsOrganizer(userId))
+            {
+                throw new ServiceException(ExceptionMessage.Event.OrgCantLeaveEvent);
+            }
+            if (!user.IsRegisteredOnEvent(eventId))
+            {
+                throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
+            }
+            user.RemoveActivity(eventId);
+            @event.RemoveParticipant(userId);
+            await _userRepository.UpdateAsync(user);
+            await _eventRepository.UpdateAsync(@event);
+        }
+
+        public async Task BanUserOnEventAsync(Guid eventId, Guid userId, Guid crewUserId)
+        {
+            var user = await TryGetUser(userId);
+            var @event = await TryGetEvent(eventId);
+            if(!@event.IsOrganizer(crewUserId) && !@event.IsCoOrganizer(crewUserId))
+            {
+                throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
+            }
+            if(@event.IsOrganizer(userId))
+            {
+                throw new ServiceException(ExceptionMessage.Event.OrgCantLeaveEvent);
+            }
+            if (!user.IsRegisteredOnEvent(eventId))
             {
                 throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
             }
 
-            user.RemoveActivity(eventId);
+            user.ChangeActivityStatus(eventId, EventActivityStatus.Banned);
             @event.RemoveParticipant(userId);
             await _userRepository.UpdateAsync(user);
             await _eventRepository.UpdateAsync(@event);
@@ -93,16 +121,18 @@ namespace MagicEvents.Api.Service.Application.Services
         public async Task DeleteEventAsync(Guid id, Guid userId)
         {
             var @event = await _eventRepository.GetAsync(id);
-            if(@event is null)
+            if (@event is null)
             {
                 throw new ServiceException(ExceptionMessage.Event.EventNotFound);
             }
-            if(!@event.IsOrganizer(userId))
+            if (!@event.IsOrganizer(userId))
             {
                 throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
             }
+            await RemoveEventFromActivityLists(userId, @event);
             await _eventRepository.DeleteAsync(@event.Id);
         }
+
         public async Task CancelEventAsync(Guid id, Guid userId)
         {
             await TryUpdateAsync(id, userId, @event => {
@@ -159,6 +189,23 @@ namespace MagicEvents.Api.Service.Application.Services
                 throw new ServiceException(ExceptionMessage.Event.EventNotFound);
             }
             return @event;
+        }
+
+        private async Task RemoveEventFromActivityLists(Guid userId, Event @event)
+        {
+            List<Guid> allParticipantsIds = @event.Participants.StandardParticipants.ToList();
+            allParticipantsIds.AddRange(@event.Participants.CoOrganizers);
+            List<User> usersToUpdate = new List<User>();
+            foreach (Guid participantId in allParticipantsIds)
+            {
+                var participant = await _userRepository.GetAsync(userId);
+                if (participant is null)
+                {
+                    throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
+                }
+                participant.RemoveActivity(@event.Id);
+            }
+            await _userRepository.UpdateAsync(usersToUpdate);
         }
     }
 }

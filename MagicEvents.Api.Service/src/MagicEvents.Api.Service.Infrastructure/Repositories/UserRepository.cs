@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Domain.Entities;
 using MagicEvents.Api.Service.Domain.Repositories;
@@ -31,5 +32,15 @@ namespace MagicEvents.Api.Service.Infrastructure.Repositories
 
         public async Task UpdateAsync(User user)
             => await _users.ReplaceOneAsync(x => x.Id == user.Id, user);
+
+        public async Task UpdateAsync(List<User> users)
+        {
+            List<Task> updateTasks = new List<Task>();
+            foreach(User user in users)
+            {
+                updateTasks.Add(UpdateAsync(user));
+            }
+            await Task.WhenAll(updateTasks);
+        }
     }
 }

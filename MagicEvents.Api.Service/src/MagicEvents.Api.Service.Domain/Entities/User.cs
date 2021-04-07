@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MagicEvents.Api.Service.Domain.Enums;
+using MagicEvents.Api.Service.Domain.Exceptions;
 using MagicEvents.Api.Service.Domain.ValueObjects;
 
 namespace MagicEvents.Api.Service.Domain.Entities
@@ -22,15 +24,25 @@ namespace MagicEvents.Api.Service.Domain.Entities
             CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
-        public void AddToActivities(Guid eventId, string userRole)
+        public void AddToActivities(Guid eventId, string userRole, string activityStatus)
         {
             EventActivities.Add(new UserEventActivity
             {
                 EventId = eventId,
-                Role = userRole
+                Role = userRole,
+                Status = activityStatus
             });
         }
 
+        public void ChangeActivityStatus(Guid eventId, string activityStatus)
+        {
+            var activity = EventActivities.SingleOrDefault(e => e.EventId == eventId);
+            if(activity is null)
+            {
+                throw new DomainException(DomainExceptionMessage.Event.UserNotRegisteredForEvent);
+            }
+            activity.Status = activityStatus;
+        }
         public void RemoveActivity(Guid eventId)
         {
             var activity = EventActivities.SingleOrDefault(e => e.EventId == eventId);
@@ -38,10 +50,22 @@ namespace MagicEvents.Api.Service.Domain.Entities
             EventActivities.Remove(activity);
         }
 
-        public bool IsRegisteredForEvent(Guid eventId)
+        public bool IsRegisteredOnEvent(Guid eventId)
         {
             return EventActivities
                 .SingleOrDefault(x => x.EventId == eventId) is not null;
+        }
+
+        public bool CanRegisterOnEvent(Guid eventId)
+        {
+            var eventActivity = EventActivities
+                .SingleOrDefault(x => x.EventId == eventId);
+            if(eventActivity is null) return true;
+            if(eventActivity.Status == EventActivityStatus.Left)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

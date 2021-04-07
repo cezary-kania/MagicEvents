@@ -43,5 +43,15 @@ namespace MagicEvents.Api.Service.Infrastructure.Repositories.InMemoryRepositori
             _users.Add(user);
             return Task.CompletedTask;
         }
+
+        public async Task UpdateAsync(List<User> users)
+        {
+            List<Task> updateTasks = new List<Task>();
+            foreach(User user in users)
+            {
+                updateTasks.Add(UpdateAsync(user));
+            }
+            await Task.WhenAll(updateTasks);
+        }
     }
 }

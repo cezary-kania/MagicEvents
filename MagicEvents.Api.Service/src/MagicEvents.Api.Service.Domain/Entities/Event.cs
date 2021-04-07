@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MagicEvents.Api.Service.Domain.Enums;
 using MagicEvents.Api.Service.Domain.ValueObjects;
 
@@ -52,6 +53,13 @@ namespace MagicEvents.Api.Service.Domain.Entities
 
         public bool IsOrganizer(Guid userId) 
             => OrganizerId == userId;
+
+        public bool IsCoOrganizer(Guid userId)
+        {
+            return Participants.CoOrganizers
+                .ToList()
+                .Contains(userId);
+        }
         
         public bool IsOpenForRegistration()
             => Status == EventStatus.Open;

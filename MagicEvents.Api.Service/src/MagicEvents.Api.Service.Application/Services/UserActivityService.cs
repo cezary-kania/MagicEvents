@@ -46,7 +46,7 @@ namespace MagicEvents.Api.Service.Application.Services
                 throw new ServiceException(ExceptionMessage.Event.CantRegisterForEvent);
             }
 
-            if (user.IsRegisteredForEvent(eventId)
+            if (!user.CanRegisterOnEvent(eventId)
                 || @event.IsOrganizer(userId)
                 || @event.Participants.IsCoOrganizer(userId)
                 || @event.Participants.IsStandardParticipant(userId))
@@ -54,7 +54,8 @@ namespace MagicEvents.Api.Service.Application.Services
                 throw new ServiceException(ExceptionMessage.Event.UserAlreadyRegisteredForEvent);
             }
 
-            user.AddToActivities(eventId, UserEventRole.StandardParticipant);
+            user.AddToActivities(eventId, UserEventRole.StandardParticipant, 
+                EventActivityStatus.Active);
             @event.AddParticipant(userId, UserEventRole.StandardParticipant);
             await _userRepository.UpdateAsync(user);
             await _eventRepository.UpdateAsync(@event);
@@ -68,7 +69,7 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.Event.OrgCantLeaveEvent);
             }
-            if (!user.IsRegisteredForEvent(eventId))
+            if (!user.IsRegisteredOnEvent(eventId))
             {
                 throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
             }
@@ -76,7 +77,7 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.Event.EventHasFinished);
             }
-            user.RemoveActivity(eventId);
+            user.ChangeActivityStatus(eventId, EventActivityStatus.Left);
             @event.RemoveParticipant(userId);
             await _userRepository.UpdateAsync(user);
             await _eventRepository.UpdateAsync(@event);
