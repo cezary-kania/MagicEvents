@@ -147,7 +147,7 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
         }
 
         [Fact]
-        public async Task LeaveEvent_WhenUserIsRegisteredAndItIsNotOrganizer_ShouldDeleteActivity()
+        public async Task LeaveEvent_WhenUserIsRegisteredAndItIsNotOrganizer_ShouldMarkActivityAsLeft()
         {
             // Arrange
             string eventId = await CreateRandomNewEvent();
@@ -160,8 +160,12 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
 
-            activities.Should()
-                .BeEmpty();
+            var activity = activities.SingleOrDefault(x => x.EventId == Guid.Parse(eventId));
+            activity.Status
+                .Should()
+                .NotBeEmpty()
+                .And
+                .BeEquivalentTo("Left");
         }
 
         [Fact]
