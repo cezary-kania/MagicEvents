@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+    api-service:
+        build:
+            context: .
+            dockerfile: MagicEvents.Api.Service/src/MagicEvents.Api.Service.Api/Dockerfile
+        ports:
+            - 80:80
+            - 443:433
+        depends_on:
+            - mongoDB
+        restart: on-failure
+    mongoDB:
+        image: mongo:latest
+        volumes:
+            - mongodb_volume:/data/db
+        ports:
+            - 27016:27017
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=password
+
+volumes:
+    mongodb_volume:
