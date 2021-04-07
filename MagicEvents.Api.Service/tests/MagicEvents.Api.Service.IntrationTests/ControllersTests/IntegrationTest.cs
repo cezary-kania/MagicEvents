@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Api;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity;
+using MagicEvents.Api.Service.Application.DTOs.Users.Identity.LoginUser;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
 using MagicEvents.Api.Service.Domain.Repositories;
 using MagicEvents.Api.Service.IntrationTests.DataFactories;
@@ -48,8 +49,16 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
 
         protected async Task AuthenticateAsync(RegisterUserDto registerUserDto)
         {
-            var token = await GetUserJWT(registerUserDto);
-            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            var serializedUser = JsonConvert.SerializeObject(registerUserDto);
+            var token = await GetUserJWT("/Identity/register", serializedUser);
+            SetAuthHeader(token);
+        }
+
+        protected async Task AuthenticateAsync(LoginUserDto loginUserDto)
+        {
+            var serializedUser = JsonConvert.SerializeObject(loginUserDto);
+            var token = await GetUserJWT("/Identity/login", serializedUser);
+            SetAuthHeader(token);
         }   
 
         protected async Task AuthenticateAsync()
@@ -58,16 +67,24 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             await AuthenticateAsync(registerUserDto);
         }
 
+        protected void SetAuthHeader(string token)
+        {
+            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+        }
         protected void ClearAuthHeader()
         {
             TestClient.DefaultRequestHeaders.Authorization = null;
         }
 
-        private async Task<string> GetUserJWT(RegisterUserDto registerUserDto)
+        private async Task<String> GetUserJWT(string url, string serializedUser)
         {
-            var serializedUser = JsonConvert.SerializeObject(registerUserDto);
             var content = new StringContent(serializedUser, Encoding.UTF8, "application/json");
-            var response = await TestClient.PostAsync("/Identity/register",content);
+            var response = await TestClient.PostAsync(url,content);
+            return await GetToken(response);
+        }
+
+        private static async Task<string> GetToken(HttpResponseMessage response)
+        {
             var responseString = await response.Content.ReadAsStringAsync();
             var authTokenDto = JsonConvert.DeserializeObject<AuthTokenDto>(responseString);
             return authTokenDto.Token;
