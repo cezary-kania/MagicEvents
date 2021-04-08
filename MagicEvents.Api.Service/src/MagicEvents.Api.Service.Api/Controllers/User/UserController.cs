@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
@@ -25,6 +26,17 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         public async Task<IActionResult> GetUser()
         {
             var user = await _userService.GetAsync(UserId);
+            if(user is null) return NotFound();
+            return Ok(user);
+        }
+
+        [HttpGet("userData/{userId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(UserDto), 200)]
+        [ProducesResponseType(typeof(object),404)]
+        public async Task<IActionResult> GetUserById([FromRoute] Guid userId)
+        {
+            var user = await _userService.GetAsync(userId);
             if(user is null) return NotFound();
             return Ok(user);
         }

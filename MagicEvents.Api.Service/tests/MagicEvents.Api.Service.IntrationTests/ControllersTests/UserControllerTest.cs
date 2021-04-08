@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -30,7 +31,6 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
         public async Task GetUser_WhenUserIsAuthenticated_ShouldReturnOKStatus()
         {
             // Arrange
-            var testUser = UserTestDataFactory.CreateTestUser();
             await AuthenticateAsync();
             // Act
             var response = await TestClient.GetAsync("User/userData");
@@ -50,6 +50,61 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             response.StatusCode
                 .Should()
                 .BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetUserById_WhenUserIsAuthenticated_ShouldReturnUserInfo()
+        {
+            // Arrange
+            var testUser = UserTestDataFactory.CreateTestUser();
+            await AuthenticateAsync(testUser);
+            var userId = await GetUserId();
+            // Act
+            var response = await TestClient.GetAsync($"User/userData/{userId}");
+            var contentString = await response.Content.ReadAsStringAsync();
+            var content = JsonConvert.DeserializeObject<UserDto>(contentString); 
+            // Assert
+            content.Identity.Email
+                .Should()
+                .BeEquivalentTo(testUser.Email);
+        }
+
+        [Fact]
+        public async Task GetUserById_WhenUserIsAuthenticated_ShouldReturnOKStatus()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserId();
+            // Act
+            var response = await TestClient.GetAsync($"User/userData/{userId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task GetUserById_WhenUserIsNotAuthenticated_ShouldReturnUnauthorizedStatus()
+        {
+            // Arrange
+            var testUser = UserTestDataFactory.CreateTestUser();
+            await AuthenticateAsync(testUser);
+            var userId = await GetUserId();
+            ClearAuthHeader();
+            // Act
+            var response = await TestClient.GetAsync($"User/userData/{userId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        private async Task<Guid> GetUserId()
+        {   
+            var userResponse = await TestClient.GetAsync("User/userData");
+            var userResponseString = await userResponse.Content.ReadAsStringAsync();
+            var userId = JsonConvert.DeserializeObject<UserDto>(userResponseString).Id;
+            return userId;
         }
     }
 }
