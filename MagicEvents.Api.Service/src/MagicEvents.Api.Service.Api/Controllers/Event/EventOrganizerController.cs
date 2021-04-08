@@ -91,6 +91,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> SetThumbnail([FromRoute] Guid eventId, [FromForm] IFormFile file)
         {
+            if(file is null) return BadRequest();
             var binaryData = await FileConverter.ConvertToByteArray(file);
             await _eventOrganizerService.SetThumbnailAsync(eventId, UserId, binaryData);
             return NoContent();
