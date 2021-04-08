@@ -32,6 +32,15 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
             return Created(locationUrl, null);
         }
 
+        [HttpDelete("{eventId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
+        public async Task<IActionResult> DeleteEvent([FromRoute]Guid eventId)
+        {
+            await _eventOrganizerService.DeleteEventAsync(eventId, UserId);
+            return NoContent();
+        }
+
         [HttpPost("{eventId}/coorganizers")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
