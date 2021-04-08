@@ -159,13 +159,13 @@ namespace MagicEvents.Api.Service.Application.Services
         private async Task TryUpdateAsync(Guid eventId, Guid userId, Action<Event> updateAction)
         {
             var @event = await _eventRepository.GetAsync(eventId);
-            if(!@event.IsOrganizer(userId) && !@event.Participants.IsCoOrganizer(userId))
-            {
-                throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
-            }
             if(@event is null)
             {
                 throw new ServiceException(ExceptionMessage.Event.EventNotFound);
+            }
+            if(!@event.IsOrganizer(userId) && !@event.Participants.IsCoOrganizer(userId))
+            {
+                throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
             }
             updateAction(@event);
             await _eventRepository.UpdateAsync(@event);
