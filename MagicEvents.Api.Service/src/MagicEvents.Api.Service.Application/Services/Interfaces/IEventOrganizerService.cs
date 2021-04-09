@@ -11,9 +11,6 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
         Task SetThumbnailAsync(Guid eventId, Guid userId, byte[] thumbnail);
         Task CreateEventAsync(Guid eventId, Guid organizerId, CreateEventDto createEventDto);
         Task UpdateEventAsync(Guid eventId, Guid userId, UpdateEventDto updateEventDto);
-        Task DeleteEventAsync(Guid id, Guid userId);
-        Task AddCoOrganizerAsync(Guid eventId, Guid userId, Guid organizerId);
-        Task RemoveUserFromEventAsync(Guid eventId, Guid userId, Guid crewUserId);
-        Task BanUserOnEventAsync(Guid eventId, Guid userId, Guid crewUserId);
+        Task DeleteEventAsync(Guid id, Guid organizerId);
     }
 }

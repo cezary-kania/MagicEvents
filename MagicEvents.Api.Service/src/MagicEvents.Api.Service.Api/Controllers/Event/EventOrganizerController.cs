@@ -41,33 +41,6 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
             return NoContent();
         }
 
-        [HttpPost("{eventId}/coorganizers")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> AddCoOrganizer([FromRoute]Guid eventId, [FromBody]AddCoOrganizerDto addCoOrganizerDto)
-        {
-            await _eventOrganizerService.AddCoOrganizerAsync(eventId, addCoOrganizerDto.UserId, UserId);
-            return NoContent();
-        }
-
-        [HttpDelete("{eventId}/participants/{participantId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> RemoveParticipant([FromRoute]Guid eventId, [FromRoute]Guid participantId)
-        {
-            await _eventOrganizerService.RemoveUserFromEventAsync(eventId, participantId, UserId);
-            return NoContent();
-        }
-
-        [HttpPatch("{eventId}/participants/{participantId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> BanParticipant([FromRoute]Guid eventId, [FromRoute]Guid participantId)
-        {
-            await _eventOrganizerService.BanUserOnEventAsync(eventId, participantId, UserId);
-            return NoContent();
-        }
-
         [HttpPut("{eventId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
