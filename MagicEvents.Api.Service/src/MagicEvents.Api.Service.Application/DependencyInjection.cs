@@ -23,6 +23,7 @@ namespace MagicEvents.Api.Service.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddScoped<IEventService,EventService>();
             services.AddScoped<IEventOrganizerService,EventOrganizerService>();
+            services.AddScoped<IEventParticipantsOrganizerService,EventParticipantsOrganizerService>();
             services.AddScoped<IUserActivityService,UserActivityService>();
             services.AddScoped<IUserIdentityService,UserIdentityService>();
             services.AddScoped<IUserProfileService,UserProfileService>();
