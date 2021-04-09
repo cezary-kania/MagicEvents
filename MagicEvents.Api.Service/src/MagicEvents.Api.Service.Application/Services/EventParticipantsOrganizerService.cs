@@ -93,6 +93,31 @@ namespace MagicEvents.Api.Service.Application.Services
             await _eventRepository.UpdateAsync(@event);
         }
 
+        public async Task RemoveCoOrganizerAsync(Guid eventId, Guid coOrganizerId, Guid userId)
+        {
+            var user = await TryGetUser(coOrganizerId);
+            var @event = await TryGetEvent(eventId);
+            if(!@event.IsOrganizer(userId))
+            {
+                throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
+            }
+            if (!user.IsRegisteredOnEvent(eventId))
+            {
+                throw new ServiceException(ExceptionMessage.Event.UserNotRegisteredForEvent);
+            }
+            if(!@event.IsCoOrganizer(coOrganizerId))
+            {
+                throw new ServiceException(ExceptionMessage.Event.InvalidEventRole);
+            }
+            
+            @event.Participants.RemoveParticipant(coOrganizerId);
+            user.RemoveActivity(eventId);
+            
+            user.AddToActivities(eventId, UserEventRole.StandardParticipant,
+                EventActivityStatus.Active);
+            @event.AddParticipant(coOrganizerId, UserEventRole.StandardParticipant);
+        }
+
         private async Task<User> TryGetUser(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);
@@ -129,6 +154,5 @@ namespace MagicEvents.Api.Service.Application.Services
             }
             await _userRepository.UpdateAsync(usersToUpdate);
         }
-
     }
 }

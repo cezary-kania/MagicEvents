@@ -457,6 +457,169 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 .BeEquivalentTo("Banned");
         }
 
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenInvalidCoorganizerId_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var eventId = CreateEvent();
+            var coOrganizerId = Guid.NewGuid();
+            // Act 
+            var response = await TestClient
+                .DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{coOrganizerId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenEventIdIsInvalid_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var coOrganizerId = await GetUserId();
+            await AuthenticateAsync();
+            var eventId = Guid.NewGuid();
+            // Act 
+            var response = await TestClient
+                .DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{coOrganizerId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenEventIdIsNotOrganizer_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var coOrganizerId = await GetUserId();
+
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            var addCoOrganizerDto = new AddCoOrganizerDto
+            {
+                UserId = coOrganizerId
+            };
+            var payload = JsonConvert.SerializeObject(addCoOrganizerDto);
+            var content = new StringContent(payload, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync($"EventParticipantsOrganizer/{eventId}/coorganizers", content);
+            await AuthenticateAsync();
+            // Act 
+            var response = await TestClient
+                .DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{coOrganizerId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenUserIsNotRegisteredOnEvent_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var coOrganizerId = await GetUserId();
+
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            // Act 
+            var response = await TestClient
+                .DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{coOrganizerId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenUserIsNotCoOrganizer_ShouldReturnBadRequest()
+        {
+            // Arrange
+            var registerDto = new RegisterUserDto
+            {
+                Email = "organizer@example.com",
+                Password = "P4$$w0rd1234"
+            };
+            var loginDto = new LoginUserDto
+            {
+                Email = registerDto.Email,
+                Password = registerDto.Password
+            };
+            await AuthenticateAsync(registerDto);
+            var eventId = await CreateEvent();
+            await AuthenticateAsync();
+            var userId = await GetUserId();
+            await TestClient.PostAsync($"UserActivity/{eventId}",null);
+            await AuthenticateAsync(loginDto);
+            // Act
+            var response = await TestClient
+                .DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{userId}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenUserIsCoOrganizer_ShouldChangeEventRole()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserId();
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            var payload = new AddCoOrganizerDto 
+            {
+                UserId = userId
+            };
+            var payloadString = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(payloadString, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync($"EventParticipantsOrganizer/{eventId}/coorganizers", content);
+            // Act
+            await TestClient.DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{userId}");
+            // Assert
+            var response = await TestClient.GetAsync($"User/userData/{userId}");
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<UserDto>(responseBody);
+            var activity = user.EventActivities.SingleOrDefault(x => x.EventId.ToString() == eventId);
+            
+            activity.Should().NotBeNull();
+            activity?.Role
+                .Should()
+                .BeEquivalentTo("StandardParticipant");
+        }
+
+        [Fact]
+        public async Task RemoveCoOrganizer_WhenUserIsCoOrganizer_ShouldAddUserToStandardParticipants()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserId();
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            var payload = new AddCoOrganizerDto 
+            {
+                UserId = userId
+            };
+            var payloadString = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(payloadString, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync($"EventParticipantsOrganizer/{eventId}/coorganizers", content);
+            // Act
+            await TestClient.DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{userId}");
+            // Assert
+            var response = await TestClient.GetAsync($"Event/{eventId}");
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var @event = JsonConvert.DeserializeObject<EventDto>(responseBody);
+            @event.Participants
+                .StandardParticipants
+                .SingleOrDefault(x => x.ToString() == eventId)
+                .Should()
+                .NotBe(userId);
+        }
+
         private async Task<string> CreateEvent()
         {
             var newEventDto = EventTestDataFactory.CreateTestEventDto();

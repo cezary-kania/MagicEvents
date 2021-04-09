@@ -8,5 +8,6 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
         Task AddCoOrganizerAsync(Guid eventId, Guid userId, Guid organizerId);
         Task RemoveUserFromEventAsync(Guid eventId, Guid userId, Guid crewUserId);
         Task BanUserOnEventAsync(Guid eventId, Guid userId, Guid crewUserId);
+        Task RemoveCoOrganizerAsync(Guid eventId, Guid coOrganizerId, Guid userId);
     }
 }

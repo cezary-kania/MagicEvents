@@ -31,6 +31,15 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
             return NoContent();
         }
 
+        [HttpDelete("{eventId}/coorganizers/{coOrganizerId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object),400)]
+        public async Task<IActionResult> RemoveCoOrganizer([FromRoute]Guid eventId, [FromRoute]Guid coOrganizerId)
+        {
+            await _eventParticipantsOrganizerService.RemoveCoOrganizerAsync(eventId, coOrganizerId, UserId);
+            return NoContent();
+        }
+
         [HttpDelete("{eventId}/participants/{participantId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
