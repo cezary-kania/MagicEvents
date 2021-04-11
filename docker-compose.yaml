@@ -7,7 +7,7 @@ services:
             dockerfile: MagicEvents.Api.Service/src/MagicEvents.Api.Service.Api/Dockerfile
         ports:
             - 80:80
-            - 443:433
+            - 443:443
         depends_on:
             - mongoDB
         restart: on-failure

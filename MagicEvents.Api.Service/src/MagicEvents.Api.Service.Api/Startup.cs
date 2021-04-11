@@ -109,6 +109,8 @@ namespace MagicEvents.Api.Service.Api
                 app.UseDeveloperExceptionPage();
             }
             
+            app.UseHttpsRedirection();
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MagicEvents.Api v1"));
             
@@ -134,7 +136,6 @@ namespace MagicEvents.Api.Service.Api
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHttpsRedirection();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
