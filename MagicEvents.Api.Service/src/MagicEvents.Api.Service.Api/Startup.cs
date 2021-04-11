@@ -132,10 +132,9 @@ namespace MagicEvents.Api.Service.Api
             }));
 
             app.UseRouting();
-            
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseHttpsRedirection();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
