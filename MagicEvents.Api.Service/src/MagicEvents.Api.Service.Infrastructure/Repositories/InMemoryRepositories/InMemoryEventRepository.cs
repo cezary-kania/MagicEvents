@@ -24,15 +24,18 @@ namespace MagicEvents.Api.Service.Infrastructure.Repositories.InMemoryRepositori
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<Event>> GetAllAsync()
+        public Task<IEnumerable<Event>> GetAsync(int skip, int limit)
         {
-            return Task.FromResult(_events.AsEnumerable()); 
+            return Task.FromResult(_events.Skip(skip).Take(limit).AsEnumerable()); 
         }
 
         public Task<Event> GetAsync(Guid id)
         {
             return Task.FromResult(_events.SingleOrDefault(x => x.Id == id));
         }
+
+        public Task<long> CountAsync()
+            => Task.FromResult((long) _events.Count);
 
         public Task UpdateAsync(Event updatedEvent)
         {
@@ -41,5 +44,12 @@ namespace MagicEvents.Api.Service.Infrastructure.Repositories.InMemoryRepositori
             _events.Add(updatedEvent);
             return Task.CompletedTask;
         }
+
+        public Task DeleteAllAsync()
+        {
+            _events.Clear();
+            return Task.CompletedTask;
+        }
+
     }
 }

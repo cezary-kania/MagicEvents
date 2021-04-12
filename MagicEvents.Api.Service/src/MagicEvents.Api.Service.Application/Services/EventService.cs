@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using MagicEvents.Api.Service.Application.DTOs.Events;
-using MagicEvents.Api.Service.Application.DTOs.Events.CreateEvent;
-using MagicEvents.Api.Service.Application.DTOs.Events.UpdateEvent;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
 using MagicEvents.Api.Service.Domain.Repositories;
-using MagicEvents.Api.Service.Domain.Entities;
-using MagicEvents.Api.Service.Domain.Enums;
 using MagicEvents.Api.Service.Application.Exceptions;
+using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse;
+using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginationQuery;
 
 namespace MagicEvents.Api.Service.Application.Services
 {
@@ -25,10 +23,21 @@ namespace MagicEvents.Api.Service.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<EventDto>> GetAllEventsAsync()
+        public async Task<PaginatedResponse<EventDto>> GetEventsAsync(PaginationQueryDto paginationQuery)
         {
-            var events = await _eventRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<EventDto>>(events);
+            var totalEventsNumber = await _eventRepository.CountAsync();
+            ValidatePaginationQuery(paginationQuery, totalEventsNumber);
+            paginationQuery.PageSize = paginationQuery.PageSize > totalEventsNumber 
+                ? (int)totalEventsNumber : paginationQuery.PageSize;
+            var skip = paginationQuery.PageNumber * paginationQuery.PageSize;
+            var events = await _eventRepository.GetAsync(skip, paginationQuery.PageSize);
+            var pagitatedResponseDto = new PaginatedResponse<EventDto>(
+                _mapper.Map<IEnumerable<EventDto>>(events),
+                paginationQuery.PageNumber,
+                paginationQuery.PageSize,
+                totalEventsNumber
+            );
+            return _mapper.Map<PaginatedResponse<EventDto>>(pagitatedResponseDto);
         }
 
         public async Task<EventDto> GetEventAsync(Guid id)
@@ -45,6 +54,18 @@ namespace MagicEvents.Api.Service.Application.Services
                 return null;
             }
             return @event.Thumbnail?.BinaryData;
+        }
+
+        private static void ValidatePaginationQuery(PaginationQueryDto paginationQuery, long totalEventsNumber)
+        {
+            if (paginationQuery.PageSize < 1)
+            {
+                throw new ServiceException(ExceptionMessage.Org.InvalidPaginationParams);
+            }
+            if ((int)Math.Ceiling(totalEventsNumber / (double)paginationQuery.PageSize) < paginationQuery.PageNumber + 1)
+            {
+                throw new ServiceException(ExceptionMessage.Org.InvalidPaginationParams);
+            }
         }
     }
 }

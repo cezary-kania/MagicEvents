@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Application.DTOs.Events;
-using MagicEvents.Api.Service.Application.DTOs.Events.CreateEvent;
-using MagicEvents.Api.Service.Application.DTOs.Events.UpdateEvent;
-using MagicEvents.Api.Service.Domain.Entities;
+using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse;
+using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginationQuery;
 
 namespace MagicEvents.Api.Service.Application.Services.Interfaces
 {
@@ -12,6 +10,6 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
     {
         Task<EventDto> GetEventAsync(Guid id);
         Task<byte[]> GetEventThumbnailAsync(Guid id);
-        Task<IEnumerable<EventDto>> GetAllEventsAsync();
+        Task<PaginatedResponse<EventDto>> GetEventsAsync(PaginationQueryDto paginationQuery);
     }
 }

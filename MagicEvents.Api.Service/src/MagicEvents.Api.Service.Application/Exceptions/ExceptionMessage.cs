@@ -4,6 +4,7 @@ namespace MagicEvents.Api.Service.Application.Exceptions
     {
         public static class Org {
             public const string UknownError = "Unkown error occured";
+            public const string InvalidPaginationParams = "InvalidPaginationParams";
         }
         public static class User 
         {
