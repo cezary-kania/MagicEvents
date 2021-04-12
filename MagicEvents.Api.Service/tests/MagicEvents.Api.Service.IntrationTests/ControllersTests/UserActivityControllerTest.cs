@@ -19,9 +19,11 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
         public async Task GetActivities_WhenUserIsUnauthorized_ShouldReturnUnauthorized()
         {
             // Arrange
-            
+            await AuthenticateAsync();
+            var userId = await GetUserId();
+            ClearAuthHeader();
             // Act
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             // Assert
             response.StatusCode
                 .Should()
@@ -33,8 +35,9 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
         {
             // Arrange
             await AuthenticateAsync();
+            var userId = await GetUserId();
             // Act
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
             // Assert
@@ -48,9 +51,10 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             // Arrange
             string eventId = await CreateRandomNewEvent();
             await AuthenticateAsync();
+            var userId = await GetUserId();
             await TestClient.PostAsync($"UserActivity/{eventId}", null);
             // Act
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
             // Assert
@@ -69,12 +73,13 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 eventIds.Add(await CreateRandomNewEvent());
             } 
             await AuthenticateAsync();
+            var userId = await GetUserId();
             foreach(string eventId in eventIds)
             {
                 await TestClient.PostAsync($"UserActivity/{eventId}", null);
             }
             // Act
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
             // Assert
@@ -104,10 +109,11 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             // Arrange
             string eventId = await CreateRandomNewEvent();
             await AuthenticateAsync();
+            var userId = await GetUserId();
             // Act
             await TestClient.PostAsync($"UserActivity/{eventId}", null);
             // Assert
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
 
@@ -152,11 +158,12 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             // Arrange
             string eventId = await CreateRandomNewEvent();
             await AuthenticateAsync();
+            var userId = await GetUserId();
             await TestClient.PostAsync($"UserActivity/{eventId}", null);
             // Act
             await TestClient.DeleteAsync($"UserActivity/{eventId}");
             // Assert
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
 

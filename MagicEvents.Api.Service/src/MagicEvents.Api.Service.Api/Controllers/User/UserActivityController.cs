@@ -20,12 +20,12 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
             _userActivityService = userActivityService;
         }
 
-        [HttpGet]
+        [HttpGet("{userId}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<UserEventActivityDto>), 200)]
         [ProducesResponseType(typeof(object), 400)]
-        public async Task<IActionResult> GetActivities()
-            => Ok(await _userActivityService.GetActivitiesAsync(UserId));
+        public async Task<IActionResult> GetActivities([FromRoute]Guid userId)
+            => Ok(await _userActivityService.GetActivitiesAsync(userId));
 
         [HttpPost("{eventId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
