@@ -21,29 +21,6 @@ namespace MagicEvents.Api.Service.Api.SwaggerExamples.Responses
                     FirstName = "firstname",
                     LastName = "lastname",
                     Informations = "User informations"
-                },
-                EventActivities = new List<UserEventActivityDto>()
-                {
-                    new UserEventActivityDto
-                    {
-                        EventId = Guid.NewGuid(),
-                        Role = "StandardParticipant"
-                    },
-                    new UserEventActivityDto
-                    {
-                        EventId = Guid.NewGuid(),
-                        Role = "Organizer"
-                    },
-                    new UserEventActivityDto
-                    {
-                        EventId = Guid.NewGuid(),
-                        Role = "StandardParticipant"
-                    },
-                    new UserEventActivityDto
-                    {
-                        EventId = Guid.NewGuid(),
-                        Role = "Co-Organizer"
-                    },
                 }
             };
         }

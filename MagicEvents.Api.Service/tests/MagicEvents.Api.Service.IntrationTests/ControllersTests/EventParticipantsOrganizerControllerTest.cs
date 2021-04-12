@@ -582,10 +582,10 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             // Act
             await TestClient.DeleteAsync($"EventParticipantsOrganizer/{eventId}/coorganizers/{userId}");
             // Assert
-            var response = await TestClient.GetAsync($"User/userData/{userId}");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseBody = await response.Content.ReadAsStringAsync();
-            var user = JsonConvert.DeserializeObject<UserDto>(responseBody);
-            var activity = user.EventActivities.SingleOrDefault(x => x.EventId.ToString() == eventId);
+            var userActivities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseBody);
+            var activity = userActivities.SingleOrDefault(x => x.EventId.ToString() == eventId);
             
             activity.Should().NotBeNull();
             activity?.Role
