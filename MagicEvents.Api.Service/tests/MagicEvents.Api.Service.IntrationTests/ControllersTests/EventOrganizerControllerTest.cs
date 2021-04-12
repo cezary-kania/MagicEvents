@@ -402,13 +402,5 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var eventId = locations.ToList()[0].Split('/').Last();
             return eventId;
         }
-
-        private async Task<Guid> GetUserId()
-        {   
-            var userResponse = await TestClient.GetAsync("User/userData");
-            var userResponseString = await userResponse.Content.ReadAsStringAsync();
-            var userId = JsonConvert.DeserializeObject<UserDto>(userResponseString).Id;
-            return userId;
-        }
     }
 }

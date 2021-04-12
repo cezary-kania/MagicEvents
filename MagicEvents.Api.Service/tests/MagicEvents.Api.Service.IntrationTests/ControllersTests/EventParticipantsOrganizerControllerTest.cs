@@ -175,7 +175,8 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 Password = registerParticipantDto.Password
             };
             await AuthenticateAsync(loginParticipantDto);
-            var response = await TestClient.GetAsync("UserActivity");
+            userId = await GetUserId();
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
             var activity = activities.SingleOrDefault(x => x.EventId.ToString() == eventId);
@@ -223,7 +224,7 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 Password = registerParticipantDto.Password
             };
             await AuthenticateAsync(loginParticipantDto);
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseString = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseString);
             var activity = activities.SingleOrDefault(x => x.EventId.ToString() == eventId);
@@ -315,7 +316,7 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 Password = registerParticipantDto.Password
             };
             await AuthenticateAsync(loginParticipantDto);
-            response = await TestClient.GetAsync("UserActivity");
+            response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseBody = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseBody);
             var activity = activities.SingleOrDefault(x => x.EventId.ToString() == eventId);
@@ -448,7 +449,7 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 Password = registerParticipantDto.Password
             };
             await AuthenticateAsync(loginParticipantDto);
-            var response = await TestClient.GetAsync("UserActivity");
+            var response = await TestClient.GetAsync($"UserActivity/{userId}");
             var responseBody = await response.Content.ReadAsStringAsync();
             var activities = JsonConvert.DeserializeObject<IEnumerable<UserEventActivityDto>>(responseBody);
             var activity = activities.SingleOrDefault(x => x.EventId.ToString() == eventId);
@@ -629,14 +630,6 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             newEventResponse.Headers.TryGetValues("location", out var locations);
             var eventId = locations.ToList()[0].Split('/').Last();
             return eventId;
-        }
-
-        private async Task<Guid> GetUserId()
-        {   
-            var userResponse = await TestClient.GetAsync("User/userData");
-            var userResponseString = await userResponse.Content.ReadAsStringAsync();
-            var userId = JsonConvert.DeserializeObject<UserDto>(userResponseString).Id;
-            return userId;
         }
     }
 }

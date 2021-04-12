@@ -98,13 +98,5 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
                 .Should()
                 .BeEquivalentTo(HttpStatusCode.Unauthorized);
         }
-
-        private async Task<Guid> GetUserId()
-        {   
-            var userResponse = await TestClient.GetAsync("User/userData");
-            var userResponseString = await userResponse.Content.ReadAsStringAsync();
-            var userId = JsonConvert.DeserializeObject<UserDto>(userResponseString).Id;
-            return userId;
-        }
     }
 }

@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Api;
+using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.LoginUser;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
@@ -88,6 +89,14 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var responseString = await response.Content.ReadAsStringAsync();
             var authTokenDto = JsonConvert.DeserializeObject<AuthTokenDto>(responseString);
             return authTokenDto.Token;
+        }
+
+        protected async Task<Guid> GetUserId()
+        {   
+            var userResponse = await TestClient.GetAsync("User/userData");
+            var userResponseString = await userResponse.Content.ReadAsStringAsync();
+            var userId = JsonConvert.DeserializeObject<UserDto>(userResponseString).Id;
+            return userId;
         }           
     }
 }
