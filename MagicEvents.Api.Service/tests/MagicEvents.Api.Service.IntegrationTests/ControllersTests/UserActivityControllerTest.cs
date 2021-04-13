@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MagicEvents.Api.Service.Application.DTOs.Users;
-using MagicEvents.Api.Service.IntrationTests.DataFactories;
+using MagicEvents.Api.Service.IntegrationTests.DataFactories;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
+namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
 {
     public class UserActivityControllerTest : IntegrationTest
     {

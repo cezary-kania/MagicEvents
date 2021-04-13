@@ -12,11 +12,11 @@ using MagicEvents.Api.Service.Application.DTOs.Events.UpdateEvent;
 using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.LoginUser;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
-using MagicEvents.Api.Service.IntrationTests.DataFactories;
+using MagicEvents.Api.Service.IntegrationTests.DataFactories;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
+namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
 {
     public class EventParticipantsOrganizerControllerTest : IntegrationTest
     {

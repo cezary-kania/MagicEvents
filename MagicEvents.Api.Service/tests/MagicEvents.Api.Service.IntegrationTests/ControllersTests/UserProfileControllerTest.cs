@@ -9,7 +9,7 @@ using MagicEvents.Api.Service.Application.DTOs.Users.UpdateProfile;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
+namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
 {
     public class UserProfileControllerTest : IntegrationTest
     {
