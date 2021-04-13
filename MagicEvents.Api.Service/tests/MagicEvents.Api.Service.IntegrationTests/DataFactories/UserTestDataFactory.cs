@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
 
-namespace MagicEvents.Api.Service.IntrationTests.DataFactories
+namespace MagicEvents.Api.Service.IntegrationTests.DataFactories
 {
     public static class UserTestDataFactory
     {

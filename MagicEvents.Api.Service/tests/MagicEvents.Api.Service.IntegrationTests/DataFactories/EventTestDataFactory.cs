@@ -1,7 +1,7 @@
 using System;
 using MagicEvents.Api.Service.Application.DTOs.Events.CreateEvent;
 
-namespace MagicEvents.Api.Service.IntrationTests.DataFactories
+namespace MagicEvents.Api.Service.IntegrationTests.DataFactories
 {
     public static class EventTestDataFactory
     {

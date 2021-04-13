@@ -9,13 +9,13 @@ using MagicEvents.Api.Service.Application.DTOs.Users.Identity;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.LoginUser;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
 using MagicEvents.Api.Service.Domain.Repositories;
-using MagicEvents.Api.Service.IntrationTests.DataFactories;
+using MagicEvents.Api.Service.IntegrationTests.DataFactories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
+namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
 {
     public class IntegrationTest : IDisposable
     {
