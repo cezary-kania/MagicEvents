@@ -8,6 +8,7 @@ using MagicEvents.Api.Service.Domain.Repositories;
 using MagicEvents.Api.Service.Application.Exceptions;
 using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse;
 using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginationQuery;
+using MagicEvents.Api.Service.Domain.Entities;
 
 namespace MagicEvents.Api.Service.Application.Services
 {
@@ -27,14 +28,18 @@ namespace MagicEvents.Api.Service.Application.Services
         {
             var totalEventsNumber = await _eventRepository.CountAsync();
             ValidatePaginationQuery(paginationQuery, totalEventsNumber);
-            paginationQuery.PageSize = paginationQuery.PageSize > totalEventsNumber 
-                ? (int)totalEventsNumber : paginationQuery.PageSize;
-            var skip = paginationQuery.PageNumber * paginationQuery.PageSize;
-            var events = await _eventRepository.GetAsync(skip, paginationQuery.PageSize);
+            var events = new List<Event>();
+            if(totalEventsNumber > 0)
+            {
+                var skip = paginationQuery.PageNumber * paginationQuery.PageSize;
+                events.AddRange(await _eventRepository.GetAsync(skip, paginationQuery.PageSize));
+            }
+            var pageSize = paginationQuery.PageSize > totalEventsNumber ? (int) totalEventsNumber : paginationQuery.PageSize;
+            var totalPages = (pageSize < 1) ? 0 : (int) Math.Ceiling(totalEventsNumber / (double) pageSize);
             var pagitatedResponseDto = new PaginatedResponse<EventDto>(
                 _mapper.Map<IEnumerable<EventDto>>(events),
                 paginationQuery.PageNumber,
-                paginationQuery.PageSize,
+                totalPages,
                 totalEventsNumber
             );
             return _mapper.Map<PaginatedResponse<EventDto>>(pagitatedResponseDto);
@@ -62,6 +67,7 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.Org.InvalidPaginationParams);
             }
+            if(totalEventsNumber == 0 && paginationQuery.PageNumber == 0) return;
             if ((int)Math.Ceiling(totalEventsNumber / (double)paginationQuery.PageSize) < paginationQuery.PageNumber + 1)
             {
                 throw new ServiceException(ExceptionMessage.Org.InvalidPaginationParams);

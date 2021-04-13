@@ -12,12 +12,12 @@ namespace MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse
         public bool HasNext => PageIndex + 1 < TotalPages;
         public bool HasPrevious => PageIndex > 0;
 
-        public PaginatedResponse(IEnumerable<T> items, int pageIndex, int pageSize, long count)
+        public PaginatedResponse(IEnumerable<T> items, int pageIndex, int totalPages, long count)
         {
             Items = items;
             PageIndex = pageIndex;
+            TotalPages = totalPages;
             TotalCount = count;
-            TotalPages = (int) Math.Ceiling(TotalCount / (double) pageSize);
         }
     }
 }
