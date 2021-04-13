@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore MagicEvents.Api.Service/src/MagicEvents.Api.Service.Api/MagicEvents.Api.Service.Api.csproj
     - name: Test
-      run: dotnet test --no-build --verbosity normal MagicEvents.Api.Service/tests/MagicEvents.Api.Service.IntegrationTests/MagicEvents.Api.Service.IntegrationTests.csproj
+      run: dotnet test --verbosity normal MagicEvents.Api.Service/tests/MagicEvents.Api.Service.IntegrationTests/MagicEvents.Api.Service.IntegrationTests.csproj
