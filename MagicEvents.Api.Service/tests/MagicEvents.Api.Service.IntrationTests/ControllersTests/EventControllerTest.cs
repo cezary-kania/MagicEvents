@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using MagicEvents.Api.Service.Application.DTOs.Events.CreateEvent;
-using MagicEvents.Api.Service.Domain.Entities;
+using MagicEvents.Api.Service.Application.DTOs.Events;
+using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse;
 using MagicEvents.Api.Service.IntrationTests.DataFactories;
 using Newtonsoft.Json;
 using Xunit;
@@ -24,7 +23,8 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var response = await TestClient.GetAsync("/Event");
             var responseString = await response.Content.ReadAsStringAsync();
             // Assert
-            JsonConvert.DeserializeObject<IEnumerable<Event>>(responseString)
+            var paginatedEventList = JsonConvert.DeserializeObject<PaginatedResponseDto<EventDto>>(responseString);
+            paginatedEventList.Items
                 .Should()
                 .BeEmpty();
         }
@@ -42,7 +42,8 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var response = await TestClient.GetAsync("/Event");
             var responseString = await response.Content.ReadAsStringAsync();
             // Assert
-            JsonConvert.DeserializeObject<IEnumerable<Event>>(responseString)
+            var paginatedEventList = JsonConvert.DeserializeObject<PaginatedResponseDto<EventDto>>(responseString);
+            paginatedEventList.Items
                 .Should()
                 .NotBeEmpty();
         }
@@ -63,7 +64,7 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
             var response = await TestClient.GetAsync($"/Event/{eventId}");
             var responseString = await response.Content.ReadAsStringAsync();
             // Assert
-            JsonConvert.DeserializeObject<Event>(responseString)
+            JsonConvert.DeserializeObject<EventDto>(responseString)
                 .Should()
                 .NotBeNull();
         }
