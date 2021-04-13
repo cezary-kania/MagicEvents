@@ -8,9 +8,11 @@ namespace MagicEvents.Api.Service.Domain.Repositories
     public interface IEventRepository
     {
         Task<Event> GetAsync(Guid id);
-        Task<IEnumerable<Event>> GetAllAsync();
+        Task<IEnumerable<Event>> GetAsync(int skip, int limit);
+        Task<long> CountAsync();
         Task CreateAsync(Event newEvent);
         Task UpdateAsync(Event updatedEvent);
         Task DeleteAsync(Guid id);
+        Task DeleteAllAsync();
     }
 }

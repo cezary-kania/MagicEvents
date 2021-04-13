@@ -41,11 +41,7 @@ namespace MagicEvents.Api.Service.IntrationTests.ControllersTests
         private static void DeleteAllEvents(IServiceScope serviceScope)
         {
             var repository = serviceScope.ServiceProvider.GetService<IEventRepository>();
-            var events = Task.Run(repository.GetAllAsync).Result;
-            foreach (var @event in events)
-            {
-                Task.Run(async () => await repository.DeleteAsync(@event.Id));
-            }
+            Task.Run(repository.DeleteAllAsync);
         }
 
         protected async Task AuthenticateAsync(RegisterUserDto registerUserDto)
