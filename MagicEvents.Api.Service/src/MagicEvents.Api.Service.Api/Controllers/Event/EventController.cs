@@ -1,7 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using MagicEvents.Api.Service.Api.SwaggerExamples.Responses;
 using MagicEvents.Api.Service.Application.DTOs.Events;
+using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse;
 using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginationQuery;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
 
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<EventDto>), 200)]
+        [ProducesResponseType(typeof(PaginatedResponseDto<EventDto>), 200)]
         public async Task<IActionResult> GetAllEvents([FromQuery]PaginationQueryDto paginationQuery)
         {
             if(paginationQuery is null) paginationQuery = new PaginationQueryDto();
