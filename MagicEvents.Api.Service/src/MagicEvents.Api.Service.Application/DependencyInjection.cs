@@ -30,6 +30,7 @@ namespace MagicEvents.Api.Service.Application
             services.AddScoped<IUserService,UserService>();
             services.AddSingleton<IEncryptService,EncryptService>();
             services.AddSingleton<IJwtService,JwtService>();
+            services.AddSingleton<IImageProcessor,ImageProcessor>();
             return services;
         }
     }
