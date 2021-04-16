@@ -16,7 +16,7 @@ namespace MagicEvents.Api.Service.Application.Services
             "image/jpeg",
             "image/png"
         };
-        public async Task<byte[]> CreateThumbnail(byte[] fileData)
+        public async Task<byte[]> CreateThumbnailAsync(byte[] fileData)
         {
             try {
                 using var image = Image.Load(fileData);

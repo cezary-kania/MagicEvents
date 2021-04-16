@@ -44,7 +44,7 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.File.InvalidInputFile);
             }
-            imageData = await _imageProcessor.CreateThumbnail(imageData);
+            imageData = await _imageProcessor.CreateThumbnailAsync(imageData);
             user.Profile.Image = new UserProfileImage 
             { 
                 UserId = userId, 

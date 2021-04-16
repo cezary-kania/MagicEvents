@@ -47,6 +47,10 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> UpdateProfileImage([FromForm] IFormFile file)
         {
+            if(file is null) 
+            {
+                return BadRequest(new { error = "File can't be null" });
+            }
             if(file.IsLargeFile())
             {
                 return BadRequest(new {error = "File size limit exceeded"});    
