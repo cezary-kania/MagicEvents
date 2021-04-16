@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <Content Include="appsettings.json" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Always" />
+    <Content Include="SampleData/NotImageFile.txt" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Always" />
+    <Content Include="SampleData/ValidImageFile.jpg" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>

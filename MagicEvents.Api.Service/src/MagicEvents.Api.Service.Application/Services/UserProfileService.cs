@@ -15,10 +15,12 @@ namespace MagicEvents.Api.Service.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public UserProfileService(IMapper mapper, IUserRepository userRepository)
+        private readonly IImageProcessor _imageProcessor;
+        public UserProfileService(IMapper mapper, IUserRepository userRepository, IImageProcessor imageProcessor)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            _imageProcessor = imageProcessor;
         }
 
         public async Task<UserProfileBaseDto> GetProfileAsync(Guid userId)
@@ -30,14 +32,18 @@ namespace MagicEvents.Api.Service.Application.Services
         public async Task<byte[]> GetProfileImageAsync(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);
-            CheckIfUserExists(user);
-            return user.Profile.Image?.BinaryData;
+            return user?.Profile?.Image?.BinaryData;
         }
 
         public async Task UpdateProfileImageAsync(Guid userId, byte[] imageData)
         {
             var user = await _userRepository.GetAsync(userId);
             CheckIfUserExists(user);
+            if(!_imageProcessor.IsValidImage(imageData))
+            {
+                throw new ServiceException(ExceptionMessage.File.InvalidInputFile);
+            }
+            imageData = await _imageProcessor.CreateThumbnailAsync(imageData);
             user.Profile.Image = new UserProfileImage 
             { 
                 UserId = userId, 

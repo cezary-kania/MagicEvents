@@ -1,11 +1,14 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.DTOs.Users.UpdateProfile;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -154,6 +157,119 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
                 .NotBeNullOrWhiteSpace()
                 .And.NotBeEquivalentTo(initialUpdateProfileDto.LastName)
                 .And.BeEquivalentTo(updatedProfileDto.LastName);
+        }
+
+        [Fact]
+        public async Task GetProfileImage_WhenUserIdIsNotValid_ShouldFail()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            // Act
+            var response = await TestClient.GetAsync($"UserProfile/{userId}/profileImage");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetProfileImage_WhenUserIdIsValid_ShouldReturnImageFile()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserIdAsync();
+            using var fileStream = File.OpenRead("SampleData/ValidImageFile.jpg");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","ValidImageFile.jpg");
+            await TestClient.PatchAsync($"UserProfile/profileImage", formData);
+            ClearAuthHeader();
+            // Act
+            var response = await TestClient.GetAsync($"UserProfile/{userId}/profileImage");
+            // Assert
+            var responseContent = await response.Content.ReadAsByteArrayAsync();
+            var result = new FileContentResult(responseContent, "image/jpeg");
+            result.FileContents
+                .Should()
+                .NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task UpdateProfileImage_WhenUserNotAuthenticated_ShouldReturnUnauthorized()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserIdAsync();
+            using var fileStream = File.OpenRead("SampleData/ValidImageFile.jpg");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","ValidImageFile.jpg");
+            ClearAuthHeader();
+            // Act
+            var response = await TestClient.PatchAsync($"UserProfile/profileImage", formData);
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task UpdateProfileImage_WhenFileIsNull_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserIdAsync();
+            var formData = new MultipartFormDataContent();
+            // Act
+            var response = await TestClient.PatchAsync($"UserProfile/profileImage", formData);
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task UpdateProfileImage_WhenFileIsNotImage_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserIdAsync();
+            using var fileStream = File.OpenRead("SampleData/NotImageFile.txt");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","NotImageFile.txt");
+            // Act
+            var response = await TestClient.PatchAsync($"UserProfile/profileImage", formData);
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task UpdateProfileImage_WhenImageIsValid_ShouldSetNewProfileImage()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var userId = await GetUserIdAsync();
+            using var fileStream = File.OpenRead("SampleData/ValidImageFile.jpg");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","ValidImageFile.jpg");
+            // Act
+            await TestClient.PatchAsync($"UserProfile/profileImage", formData);
+            // Assert
+            await AuthenticateAsync();
+            var response = await TestClient.GetAsync($"UserProfile/{userId}/profileImage");
+            var responseContent = await response.Content.ReadAsByteArrayAsync();
+            var result = new FileContentResult(responseContent, "image/jpeg");
+            result.FileContents
+                .Should()
+                .NotBeEmpty();
         }
 
         private async Task<Guid> GetUserIdAsync()

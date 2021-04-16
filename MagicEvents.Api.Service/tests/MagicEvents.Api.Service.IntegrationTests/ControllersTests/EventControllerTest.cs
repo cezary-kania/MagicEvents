@@ -1,13 +1,16 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MagicEvents.Api.Service.Application.DTOs.Events;
 using MagicEvents.Api.Service.Application.DTOs.Pagination.PaginatedResponse;
 using MagicEvents.Api.Service.IntegrationTests.DataFactories;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -113,6 +116,35 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
             response.StatusCode
                 .Should()
                 .Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetThumbnail_WhenEventHasThumbnail_ShouldReturnImageFile()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var createEventDto = EventTestDataFactory.CreateTestEventDto();
+            var serializedEvent = JsonConvert.SerializeObject(createEventDto);
+            var content = new StringContent(serializedEvent, Encoding.UTF8, "application/json");
+            var createdEventResponse = await TestClient.PostAsync("/EventOrganizer", content);
+            createdEventResponse.Headers.TryGetValues("location", out var location);
+            string eventLocation = location.ToList()[0];
+            var eventId = eventLocation.Split('/').Last();
+            // Set thumbnail
+            using var fileStream = File.OpenRead("SampleData/ValidImageFile.jpg");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","ValidImageFile.jpg");
+            await TestClient.PatchAsync($"EventOrganizer/{eventId}/thumbnail", formData);
+            // Act
+            var response = await TestClient.GetAsync($"/Event/{eventId}/thumbnail");
+            // Assert
+            var responseContent = await response.Content.ReadAsByteArrayAsync();
+            var result = new FileContentResult(responseContent, "image/jpeg");
+            result.FileContents
+                .Should()
+                .NotBeEmpty();
         }
     }
 }

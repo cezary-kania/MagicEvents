@@ -18,12 +18,14 @@ namespace MagicEvents.Api.Service.Application.Services
         private readonly IMapper _mapper;
         private readonly IEventRepository _eventRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IImageProcessor _imageProcessor;
 
-        public EventOrganizerService(IMapper mapper, IEventRepository eventRepository, IUserRepository userRepository)
+        public EventOrganizerService(IMapper mapper, IEventRepository eventRepository, IUserRepository userRepository, IImageProcessor imageProcessor)
         {
             _mapper = mapper;
             _eventRepository = eventRepository;
             _userRepository = userRepository;
+            _imageProcessor = imageProcessor;
         }
         public async Task CreateEventAsync(Guid eventId, Guid organizerId, CreateEventDto createEventDto)
         {
@@ -69,9 +71,22 @@ namespace MagicEvents.Api.Service.Application.Services
 
         public async Task SetThumbnailAsync(Guid eventId, Guid userId, byte[] thumbnail)
         {
-            await TryUpdateAsync(eventId, userId, @event => {
-                 @event.SetThumbnail(thumbnail);
-            });
+            var @event = await _eventRepository.GetAsync(eventId);
+            if(@event is null)
+            {
+                throw new ServiceException(ExceptionMessage.Event.EventNotFound);
+            }
+            if(!@event.IsOrganizer(userId) && !@event.Participants.IsCoOrganizer(userId))
+            {
+                throw new ServiceException(ExceptionMessage.User.NoPermissionForOp);
+            }
+            if(!_imageProcessor.IsValidImage(thumbnail))
+            {
+                throw new ServiceException(ExceptionMessage.File.InvalidInputFile);
+            }
+            thumbnail = await _imageProcessor.CreateThumbnailAsync(thumbnail);
+            @event.SetThumbnail(thumbnail);
+            await _eventRepository.UpdateAsync(@event);
         }
         public async Task UpdateEventAsync(Guid eventId, Guid userId, UpdateEventDto updateEventDto)
         {
