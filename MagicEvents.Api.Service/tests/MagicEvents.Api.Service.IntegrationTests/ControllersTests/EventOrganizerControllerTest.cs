@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MagicEvents.Api.Service.Application.DTOs.Events;
-using MagicEvents.Api.Service.Application.DTOs.Events.AddCoOrganizer;
-using MagicEvents.Api.Service.Application.DTOs.Events.UpdateEvent;
 using MagicEvents.Api.Service.Application.DTOs.Users;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.LoginUser;
 using MagicEvents.Api.Service.Application.DTOs.Users.Identity.RegisterUser;
 using MagicEvents.Api.Service.IntegrationTests.DataFactories;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -318,6 +319,80 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
             response.StatusCode
                 .Should()
                 .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task SetThumbnail_WhenFileIsNull_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            var formData = new MultipartFormDataContent();
+            // Act
+            var response = await TestClient.PatchAsync($"EventOrganizer/{eventId}/thumbnail", formData);
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task SetThumbnail_WhenFileIsNotImage_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            using var fileStream = File.OpenRead("SampleData/NotImageFile.txt");
+            var streamContent = new StreamContent(fileStream);
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","NotImageFile.txt");
+            // Act
+            var response = await TestClient.PatchAsync($"EventOrganizer/{eventId}/thumbnail", formData);
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task SetThumbnail_WhenImageIsValid_ShouldReturnNoContent()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            using var fileStream = File.OpenRead("SampleData/ValidImageFile.jpg");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","ValidImageFile.jpg");
+            // Act
+            var response = await TestClient.PatchAsync($"EventOrganizer/{eventId}/thumbnail", formData);
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task SetThumbnail_WhenImageIsValid_ShouldSetNewThumbnail()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var eventId = await CreateEvent();
+            using var fileStream = File.OpenRead("SampleData/ValidImageFile.jpg");
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            var formData = new MultipartFormDataContent();
+            formData.Add(streamContent, "file","ValidImageFile.jpg");
+            // Act
+            await TestClient.PatchAsync($"EventOrganizer/{eventId}/thumbnail", formData);
+            // Assert
+            var response = await TestClient.GetAsync($"Event/{eventId}/thumbnail");
+            var responseContent = await response.Content.ReadAsByteArrayAsync();
+            var result = new FileContentResult(responseContent, "image/jpeg");
+            result.FileContents
+                .Should()
+                .NotBeEmpty();
         }
 
         [Fact]

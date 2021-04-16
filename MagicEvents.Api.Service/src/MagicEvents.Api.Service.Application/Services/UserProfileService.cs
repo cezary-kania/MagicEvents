@@ -32,8 +32,7 @@ namespace MagicEvents.Api.Service.Application.Services
         public async Task<byte[]> GetProfileImageAsync(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);
-            CheckIfUserExists(user);
-            return user.Profile.Image?.BinaryData;
+            return user?.Profile?.Image?.BinaryData;
         }
 
         public async Task UpdateProfileImageAsync(Guid userId, byte[] imageData)
