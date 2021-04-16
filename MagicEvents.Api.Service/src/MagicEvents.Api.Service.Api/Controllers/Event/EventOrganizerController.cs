@@ -63,7 +63,18 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> SetThumbnail([FromRoute] Guid eventId, [FromForm] IFormFile file)
         {
-            if(file is null) return BadRequest();
+            if(file is null) 
+            {
+                return BadRequest(new { error = "File can't be null" });
+            }
+            if(file.IsLargeFile())
+            {
+                return BadRequest(new {error = "File size limit exceeded"});    
+            }
+            if(!file.ContainImage())
+            {
+                return BadRequest(new {error = "File is not image"});
+            }
             var binaryData = await file.ToByteArray();
             await _eventOrganizerService.SetThumbnailAsync(eventId, UserId, binaryData);
             return NoContent();
