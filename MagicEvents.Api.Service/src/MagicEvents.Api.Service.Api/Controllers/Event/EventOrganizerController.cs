@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using MagicEvents.Api.Service.Api.Common;
-using MagicEvents.Api.Service.Application.DTOs.Events.AddCoOrganizer;
 using MagicEvents.Api.Service.Application.DTOs.Events.CreateEvent;
 using MagicEvents.Api.Service.Application.DTOs.Events.UpdateEvent;
 using MagicEvents.Api.Service.Application.Services.Interfaces;
@@ -65,7 +64,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         public async Task<IActionResult> SetThumbnail([FromRoute] Guid eventId, [FromForm] IFormFile file)
         {
             if(file is null) return BadRequest();
-            var binaryData = await FileConverter.ConvertToByteArray(file);
+            var binaryData = await file.ToByteArray();
             await _eventOrganizerService.SetThumbnailAsync(eventId, UserId, binaryData);
             return NoContent();
         }

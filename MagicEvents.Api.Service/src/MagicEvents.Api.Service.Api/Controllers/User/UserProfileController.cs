@@ -15,11 +15,9 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
     public class UserProfileController : SecuredControllerBase
     {
         private readonly IUserProfileService _userProfileService;
-        private readonly IImageProcessor _imageProcessor;
-        public UserProfileController(IUserProfileService userProfileService, IImageProcessor imageProcessor)
+        public UserProfileController(IUserProfileService userProfileService)
         {
             _userProfileService = userProfileService;
-            _imageProcessor = imageProcessor;
         }
 
         [HttpGet("{userId}")]
@@ -49,17 +47,16 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [ProducesResponseType(typeof(object),400)]
         public async Task<IActionResult> UpdateProfileImage([FromForm] IFormFile file)
         {
-            if(!_imageProcessor.IsFileSizeValid(file.Length))
+            if(file.IsLargeFile())
             {
                 return BadRequest(new {error = "File size limit exceeded"});    
             }
-            var binaryData = await FileConverter.ConvertToByteArray(file);
-            if(!_imageProcessor.IsValidImage(binaryData, file.ContentType))
+            if(!file.ContainImage())
             {
-                return BadRequest(new {error = "Invalid input file"});
+                return BadRequest(new {error = "File is not image"});
             }
-            var thumbnailData = await _imageProcessor.CreateThumbnail(binaryData);
-            await _userProfileService.UpdateProfileImageAsync(UserId, thumbnailData);
+            var binaryData = await file.ToByteArray();
+            await _userProfileService.UpdateProfileImageAsync(UserId, binaryData);
             return NoContent();
         }
 

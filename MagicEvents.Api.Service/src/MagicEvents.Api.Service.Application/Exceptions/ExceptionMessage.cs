@@ -24,5 +24,9 @@ namespace MagicEvents.Api.Service.Application.Exceptions
             public const string CantRegisterForEvent = "CantRegisterForEvent";
             public const string EventHasFinished = "EventHasFinished";
         }
+        public static class File
+        {
+            public const string InvalidInputFile = "Invalid input file";
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
 {
     public interface IImageProcessor
     {
-        bool IsValidImage(byte[] fileBytes, string contentType);
+        bool IsValidImage(byte[] fileBytes);
         Task<byte[]> CreateThumbnail(byte[] fileBytes);
         bool IsFileSizeValid(long length);
     }

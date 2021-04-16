@@ -30,9 +30,9 @@ namespace MagicEvents.Api.Service.Application.Services
             }
         }
 
-        public bool IsValidImage(byte[] fileData, string contentType)
+        public bool IsValidImage(byte[] fileData)
         {
-            return IsImage(fileData) && IsContentTypeValid(contentType);
+            return IsFileSizeValid(fileData.Length) && IsImage(fileData);
         }
 
         private bool IsImage(byte[] fileBytes)
@@ -47,11 +47,6 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 return false;
             }
-        }
-
-        private bool IsContentTypeValid(string contentType)
-        {
-            return _allowedContentTypes.Contains(contentType);
         }
 
         public bool IsFileSizeValid(long length)
