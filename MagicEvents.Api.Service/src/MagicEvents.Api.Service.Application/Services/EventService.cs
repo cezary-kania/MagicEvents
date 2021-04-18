@@ -51,6 +51,12 @@ namespace MagicEvents.Api.Service.Application.Services
             return _mapper.Map<EventDto>(@event);
         }
 
+        public async Task<EventDto> GetEventAsync(string title)
+        {
+            var @event = await _eventRepository.GetAsync(title);
+            return _mapper.Map<EventDto>(@event);
+        }
+
         public async Task<byte[]> GetEventThumbnailAsync(Guid id)
         {
             var @event = await _eventRepository.GetAsync(id);

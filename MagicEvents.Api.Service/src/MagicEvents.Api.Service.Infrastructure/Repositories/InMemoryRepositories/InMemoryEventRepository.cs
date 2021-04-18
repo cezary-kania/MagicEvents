@@ -34,6 +34,11 @@ namespace MagicEvents.Api.Service.Infrastructure.Repositories.InMemoryRepositori
             return Task.FromResult(_events.SingleOrDefault(x => x.Id == id));
         }
 
+        public Task<Event> GetAsync(string title)
+        {
+            return Task.FromResult(_events.SingleOrDefault(x => x.Title.ToUpper() == title.ToUpper()));
+        }
+
         public Task<long> CountAsync()
             => Task.FromResult((long) _events.Count);
 

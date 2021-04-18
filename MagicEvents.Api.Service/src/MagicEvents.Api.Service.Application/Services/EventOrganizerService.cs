@@ -34,6 +34,11 @@ namespace MagicEvents.Api.Service.Application.Services
             {
                 throw new ServiceException(ExceptionMessage.User.UserNotFound);
             }
+            var existingEvent = await _eventRepository.GetAsync(createEventDto.Title);
+            if(existingEvent is not null)
+            {
+                throw new ServiceException(ExceptionMessage.Event.EventAlreadyExist);
+            }
             var @event = Event.CreateEvent(
                 eventId,
                 organizerId, 

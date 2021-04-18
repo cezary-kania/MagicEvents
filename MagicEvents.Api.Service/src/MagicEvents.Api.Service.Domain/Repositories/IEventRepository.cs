@@ -8,6 +8,7 @@ namespace MagicEvents.Api.Service.Domain.Repositories
     public interface IEventRepository
     {
         Task<Event> GetAsync(Guid id);
+        Task<Event> GetAsync(string title);
         Task<IEnumerable<Event>> GetAsync(int skip, int limit);
         Task<long> CountAsync();
         Task CreateAsync(Event newEvent);

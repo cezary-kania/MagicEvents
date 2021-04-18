@@ -23,6 +23,7 @@ namespace MagicEvents.Api.Service.Application.Exceptions
             public const string OrgCantLeaveEvent = "Organizator can't leave event";
             public const string CantRegisterForEvent = "CantRegisterForEvent";
             public const string EventHasFinished = "EventHasFinished";
+            public const string EventAlreadyExist = "EventAlreadyExist";
         }
         public static class File
         {

@@ -20,7 +20,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
             _eventService = eventService;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(PaginatedResponseDto<EventDto>), 200)]
         public async Task<IActionResult> GetAllEvents([FromQuery]PaginationQueryDto paginationQuery)
@@ -35,9 +35,21 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [ProducesResponseType(typeof(object), 404)]
         public async Task<IActionResult> GetEvent([FromRoute]Guid eventId)
         {
-            var e = await _eventService.GetEventAsync(eventId);
-            if(e is null) return NotFound();
-            return Ok(e);
+            var @event = await _eventService.GetEventAsync(eventId);
+            if(@event is null) return NotFound();
+            return Ok(@event);
+        }
+
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EventDto), 200)]
+        [ProducesResponseType(typeof(object), 404)]
+        public async Task<IActionResult> GetEventByTitle([FromQuery]string eventTitle)
+        {
+            if(eventTitle is null) return BadRequest();
+            var @event = await _eventService.GetEventAsync(eventTitle);
+            if(@event is null) return NotFound();
+            return Ok(@event);
         }
 
         [HttpGet("{eventId}/thumbnail")]
