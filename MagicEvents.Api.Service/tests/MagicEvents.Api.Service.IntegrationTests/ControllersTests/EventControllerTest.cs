@@ -23,7 +23,7 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
         {
             // Arrange
             // Act
-            var response = await TestClient.GetAsync("/Event");
+            var response = await TestClient.GetAsync("/Event/all");
             var responseString = await response.Content.ReadAsStringAsync();
             // Assert
             var paginatedEventList = JsonConvert.DeserializeObject<PaginatedResponseDto<EventDto>>(responseString);
@@ -42,7 +42,7 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
             var content = new StringContent(serializedEvent, Encoding.UTF8, "application/json");
             await TestClient.PostAsync("/EventOrganizer", content);
             // Act
-            var response = await TestClient.GetAsync("/Event");
+            var response = await TestClient.GetAsync("/Event/all");
             var responseString = await response.Content.ReadAsStringAsync();
             // Assert
             var paginatedEventList = JsonConvert.DeserializeObject<PaginatedResponseDto<EventDto>>(responseString);
@@ -96,6 +96,61 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
             response.StatusCode
                 .Should()
                 .Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetEventByTitle_WhenEventExist_ShouldReturnEventData()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var createEventDto = EventTestDataFactory.CreateTestEventDto();
+            var serializedEvent = JsonConvert.SerializeObject(createEventDto);
+            var content = new StringContent(serializedEvent, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync("/EventOrganizer", content);
+            var parsedTitle = createEventDto.Title.Replace(" ","%20");
+            // Act
+            var response = await TestClient.GetAsync($"/Event?eventTitle={parsedTitle}");
+            var responseString = await response.Content.ReadAsStringAsync();
+            // Assert
+            JsonConvert.DeserializeObject<EventDto>(responseString)
+                .Should()
+                .NotBeNull();
+        }
+
+        [Fact]
+        public async Task GetEventByTitle_WhenEventTitleIsNull_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var createEventDto = EventTestDataFactory.CreateTestEventDto();
+            var serializedEvent = JsonConvert.SerializeObject(createEventDto);
+            var content = new StringContent(serializedEvent, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync("/EventOrganizer", content);
+            var parsedTitle = createEventDto.Title.Replace(" ","%20");
+            // Act
+            var response = await TestClient.GetAsync($"/Event");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GetEventByTitle_WhenEventNotExist_ShouldReturnNotFound()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var createEventDto = EventTestDataFactory.CreateTestEventDto();
+            var serializedEvent = JsonConvert.SerializeObject(createEventDto);
+            var content = new StringContent(serializedEvent, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync("/EventOrganizer", content);
+            var parsedTitle = $"INVALID_{createEventDto.Title.Replace(" ","%20")}";
+            // Act
+            var response = await TestClient.GetAsync($"/Event?eventTitle={parsedTitle}");
+            // Assert
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.NotFound);
         }
 
         [Fact]

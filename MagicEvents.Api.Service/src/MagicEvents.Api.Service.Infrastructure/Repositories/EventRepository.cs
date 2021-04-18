@@ -34,6 +34,8 @@ namespace MagicEvents.Api.Service.Infrastructure.Repositories
 
         public async Task<Event> GetAsync(Guid id)
             => await _events.AsQueryable().FirstOrDefaultAsync(e => e.Id == id);
+        public async Task<Event> GetAsync(string title)
+            => await _events.AsQueryable().FirstOrDefaultAsync(e => e.Title.ToUpper() == title.ToUpper());
 
         public async Task UpdateAsync(Event updatedEvent)
             => await _events.ReplaceOneAsync(e => e.Id == updatedEvent.Id, updatedEvent);

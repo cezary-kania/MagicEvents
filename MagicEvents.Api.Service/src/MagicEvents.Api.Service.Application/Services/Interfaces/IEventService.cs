@@ -9,6 +9,7 @@ namespace MagicEvents.Api.Service.Application.Services.Interfaces
     public interface IEventService
     {
         Task<EventDto> GetEventAsync(Guid id);
+        Task<EventDto> GetEventAsync(string title);
         Task<byte[]> GetEventThumbnailAsync(Guid id);
         Task<PaginatedResponse<EventDto>> GetEventsAsync(PaginationQueryDto paginationQuery);
     }
