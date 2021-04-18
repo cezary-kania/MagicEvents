@@ -158,6 +158,23 @@ namespace MagicEvents.Api.Service.IntegrationTests.ControllersTests
         }
 
         [Fact]
+        public async Task CreateEvent_WhenEventTitleUsed_ShouldReturnBadRequest()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            var newEventDto = EventTestDataFactory.CreateTestEventDto();
+            var newEventDtoString = JsonConvert.SerializeObject(newEventDto);
+            var content = new StringContent(newEventDtoString, Encoding.UTF8, "application/json");
+            await TestClient.PostAsync("EventOrganizer",content);
+            // Act  
+            var response = await TestClient.PostAsync("EventOrganizer",content);
+            // Arrange
+            response.StatusCode
+                .Should()
+                .BeEquivalentTo(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task DeleteEvent_WhenInvalidEventId_ShouldReturnBadRequest()
         {
             // Arrange
