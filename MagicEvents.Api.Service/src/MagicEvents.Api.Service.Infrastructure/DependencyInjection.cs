@@ -16,6 +16,7 @@ namespace MagicEvents.Api.Service.Infrastructure
             this IServiceCollection services, 
             IConfiguration configuration)
         {
+            var heathChecksBuilder = services.AddHealthChecks();
             var useMemoryDb = Convert.ToBoolean(configuration.GetSection("UseInMemoryDatabase").Value);
             if(!useMemoryDb)
             {
@@ -26,6 +27,14 @@ namespace MagicEvents.Api.Service.Infrastructure
                 services.AddBsonClassMapping();
                 services.AddScoped<IEventRepository,EventRepository>();
                 services.AddScoped<IUserRepository,UserRepository>();
+
+                var mongoDbSettings = services.BuildServiceProvider().GetRequiredService<IMongoDbSettings>(); 
+                
+                    heathChecksBuilder.AddMongoDb(
+                        mongoDbSettings.ConnectionString,
+                        name: "mongodb",
+                        timeout: TimeSpan.FromSeconds(3)
+                    );
             }
             else
             {

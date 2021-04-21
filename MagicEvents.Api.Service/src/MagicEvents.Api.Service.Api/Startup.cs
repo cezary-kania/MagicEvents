@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Mime;
 using System.Text;
+using System.Text.Json;
 using FluentValidation.AspNetCore;
 using MagicEvents.Api.Service.Api.Filters;
 using MagicEvents.Api.Service.Application;
@@ -10,6 +13,7 @@ using MagicEvents.Api.Service.Application.Exceptions;
 using MagicEvents.Api.Service.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -139,6 +143,23 @@ namespace MagicEvents.Api.Service.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions {
+                   ResponseWriter = async (context, report) =>
+                   {
+                       var result = JsonSerializer.Serialize(
+                           new {
+                               status = report.Status.ToString(),
+                               checks = report.Entries.Select(entry => new {
+                                   name = entry.Key,
+                                   status = entry.Value.Status.ToString()
+                               })
+                           }
+                       );
+                       context.Request.ContentType = MediaTypeNames.Application.Json;
+                       await context.Response.WriteAsync(result);
+                   } 
+                });
             });
         }
     }
