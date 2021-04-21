@@ -26,6 +26,14 @@ namespace MagicEvents.Api.Service.Infrastructure
                 services.AddBsonClassMapping();
                 services.AddScoped<IEventRepository,EventRepository>();
                 services.AddScoped<IUserRepository,UserRepository>();
+
+                var mongoDbSettings = services.BuildServiceProvider().GetRequiredService<IMongoDbSettings>(); 
+                services.AddHealthChecks()
+                    .AddMongoDb(
+                        mongoDbSettings.ConnectionString,
+                        name: "mongodb",
+                        timeout: TimeSpan.FromSeconds(3)
+                    );
             }
             else
             {

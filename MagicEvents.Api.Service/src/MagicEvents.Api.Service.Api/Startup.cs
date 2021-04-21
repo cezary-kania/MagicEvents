@@ -11,7 +11,6 @@ using MagicEvents.Api.Service.Application;
 using MagicEvents.Api.Service.Application.Auth.interfaces;
 using MagicEvents.Api.Service.Application.Exceptions;
 using MagicEvents.Api.Service.Infrastructure;
-using MagicEvents.Api.Service.Infrastructure.MongoDb.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -104,13 +103,6 @@ namespace MagicEvents.Api.Service.Api
                         ValidateLifetime = true
                     };
                 });
-            var mongoDbSettings = services.BuildServiceProvider().GetRequiredService<IMongoDbSettings>(); 
-            services.AddHealthChecks()
-                .AddMongoDb(
-                    mongoDbSettings.ConnectionString,
-                    name: "mongodb",
-                    timeout: TimeSpan.FromSeconds(3)
-                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
