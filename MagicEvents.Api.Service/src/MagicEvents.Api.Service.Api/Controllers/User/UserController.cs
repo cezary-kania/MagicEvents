@@ -23,7 +23,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), 200)]
         [ProducesResponseType(typeof(object),404)]
-        public async Task<IActionResult> GetUser()
+        public async Task<IActionResult> GetUserAsync()
         {
             var user = await _userService.GetAsync(UserId);
             if(user is null) return NotFound();
@@ -34,7 +34,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), 200)]
         [ProducesResponseType(typeof(object),404)]
-        public async Task<IActionResult> GetUserById([FromRoute] Guid userId)
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute] Guid userId)
         {
             var user = await _userService.GetAsync(userId);
             if(user is null) return NotFound();

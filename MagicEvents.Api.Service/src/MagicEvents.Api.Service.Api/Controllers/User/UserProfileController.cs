@@ -24,7 +24,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserProfileBaseDto), 200)]
         [ProducesResponseType(typeof(object),404)]
-        public async Task<IActionResult> GetProfile([FromRoute]Guid userId)
+        public async Task<IActionResult> GetProfileAsync([FromRoute]Guid userId)
         {
             var userProfile = await _userProfileService.GetProfileAsync(userId);
             if(userProfile is null) return NotFound();
@@ -34,7 +34,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [HttpGet("{userId}/profileImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object),404)]
-        public async Task<IActionResult> GetProfileImage([FromRoute]Guid userId)
+        public async Task<IActionResult> GetProfileImageAsync([FromRoute]Guid userId)
         {
             var profileImage = await _userProfileService.GetProfileImageAsync(userId);
             if(profileImage is null) return NotFound();
@@ -45,7 +45,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [HttpPatch("profileImage")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> UpdateProfileImage([FromForm] IFormFile file)
+        public async Task<IActionResult> UpdateProfileImageAsync([FromForm] IFormFile file)
         {
             if(file is null) 
             {
@@ -68,7 +68,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> UpdateProfile([FromBody]UpdateProfileDto profileDto)
+        public async Task<IActionResult> UpdateProfileAsync([FromBody]UpdateProfileDto profileDto)
         {
             await _userProfileService.UpdateProfileAsync(UserId, profileDto);
             return NoContent();

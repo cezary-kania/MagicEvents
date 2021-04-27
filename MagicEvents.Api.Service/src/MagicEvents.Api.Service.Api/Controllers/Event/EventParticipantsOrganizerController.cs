@@ -25,7 +25,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPost("{eventId}/coorganizers")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> AddCoOrganizer([FromRoute]Guid eventId, [FromBody]AddCoOrganizerDto addCoOrganizerDto)
+        public async Task<IActionResult> AddCoOrganizerAsync([FromRoute]Guid eventId, [FromBody]AddCoOrganizerDto addCoOrganizerDto)
         {
             await _eventParticipantsOrganizerService.AddCoOrganizerAsync(eventId, addCoOrganizerDto.UserId, UserId);
             return NoContent();
@@ -34,7 +34,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpDelete("{eventId}/coorganizers/{coOrganizerId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> RemoveCoOrganizer([FromRoute]Guid eventId, [FromRoute]Guid coOrganizerId)
+        public async Task<IActionResult> RemoveCoOrganizerAsync([FromRoute]Guid eventId, [FromRoute]Guid coOrganizerId)
         {
             await _eventParticipantsOrganizerService.RemoveCoOrganizerAsync(eventId, coOrganizerId, UserId);
             return NoContent();
@@ -43,7 +43,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpDelete("{eventId}/participants/{participantId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> RemoveParticipant([FromRoute]Guid eventId, [FromRoute]Guid participantId)
+        public async Task<IActionResult> RemoveParticipantAsync([FromRoute]Guid eventId, [FromRoute]Guid participantId)
         {
             await _eventParticipantsOrganizerService.RemoveUserFromEventAsync(eventId, participantId, UserId);
             return NoContent();
@@ -52,7 +52,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPatch("{eventId}/participants/{participantId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> BanParticipant([FromRoute]Guid eventId, [FromRoute]Guid participantId)
+        public async Task<IActionResult> BanParticipantAsync([FromRoute]Guid eventId, [FromRoute]Guid participantId)
         {
             await _eventParticipantsOrganizerService.BanUserOnEventAsync(eventId, participantId, UserId);
             return NoContent();
