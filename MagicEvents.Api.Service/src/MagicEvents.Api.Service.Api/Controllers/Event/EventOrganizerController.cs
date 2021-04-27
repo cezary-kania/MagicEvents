@@ -23,7 +23,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> CreateEvent([FromBody]CreateEventDto createEventDto)
+        public async Task<IActionResult> CreateEventAsync([FromBody]CreateEventDto createEventDto)
         {
             var eventId = Guid.NewGuid();
             await _eventOrganizerService.CreateEventAsync(eventId, UserId, createEventDto);
@@ -34,7 +34,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpDelete("{eventId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> DeleteEvent([FromRoute]Guid eventId)
+        public async Task<IActionResult> DeleteEventAsync([FromRoute]Guid eventId)
         {
             await _eventOrganizerService.DeleteEventAsync(eventId, UserId);
             return NoContent();
@@ -43,7 +43,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPut("{eventId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> UpdateEvent([FromRoute]Guid eventId, [FromBody]UpdateEventDto updateEventDto)
+        public async Task<IActionResult> UpdateEventAsync([FromRoute]Guid eventId, [FromBody]UpdateEventDto updateEventDto)
         {
             await _eventOrganizerService.UpdateEventAsync(eventId, UserId, updateEventDto);
             return NoContent();
@@ -52,7 +52,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPatch("{eventId}/cancel")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> CancelEvent([FromRoute] Guid eventId)
+        public async Task<IActionResult> CancelEventAsync([FromRoute] Guid eventId)
         {
             await _eventOrganizerService.CancelEventAsync(eventId, UserId);
             return NoContent();
@@ -61,7 +61,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.Event
         [HttpPatch("{eventId}/thumbnail")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object),400)]
-        public async Task<IActionResult> SetThumbnail([FromRoute] Guid eventId, [FromForm] IFormFile file)
+        public async Task<IActionResult> SetThumbnailAsync([FromRoute] Guid eventId, [FromForm] IFormFile file)
         {
             if(file is null) 
             {

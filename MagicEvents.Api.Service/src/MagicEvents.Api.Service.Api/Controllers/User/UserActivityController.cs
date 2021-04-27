@@ -24,13 +24,13 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<UserEventActivityDto>), 200)]
         [ProducesResponseType(typeof(object), 400)]
-        public async Task<IActionResult> GetActivities([FromRoute]Guid userId)
+        public async Task<IActionResult> GetActivitiesAsync([FromRoute]Guid userId)
             => Ok(await _userActivityService.GetActivitiesAsync(userId));
 
         [HttpPost("{eventId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object), 400)]
-        public async Task<IActionResult> RegisterOnEvent([FromRoute] Guid eventId)
+        public async Task<IActionResult> RegisterOnEventAsync([FromRoute] Guid eventId)
         {
             await _userActivityService.RegisterOnEventAsync(UserId, eventId);
             return NoContent();
@@ -39,7 +39,7 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [HttpDelete("{eventId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(object), 400)]
-        public async Task<IActionResult> LeaveEvent([FromRoute] Guid eventId)
+        public async Task<IActionResult> LeaveEventAsync([FromRoute] Guid eventId)
         {
             await _userActivityService.LeaveEventAsync(UserId, eventId);
             return NoContent();

@@ -21,14 +21,14 @@ namespace MagicEvents.Api.Service.Api.Controllers.User
         [Produces("application/json")]
         [ProducesResponseType(typeof(AuthTokenDto), 200)]
         [ProducesResponseType(typeof(object), 400)]
-        public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
+        public async Task<IActionResult> RegisterAsync(RegisterUserDto registerUserDto)
             => Ok(await _userIdentityService.RegisterAsync(registerUserDto));
 
         [HttpPost("login")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AuthTokenDto), 200)]
         [ProducesResponseType(typeof(object), 400)]
-        public async Task<IActionResult> Login(LoginUserDto loginUserDto)
+        public async Task<IActionResult> LoginAsync(LoginUserDto loginUserDto)
             => Ok(await _userIdentityService.LoginAsync(loginUserDto));
     }
 }
