@@ -36,13 +36,12 @@ namespace MagicEvents.Api.Service.Application.Services
             }
             var pageSize = paginationQuery.PageSize > totalEventsNumber ? (int) totalEventsNumber : paginationQuery.PageSize;
             var totalPages = (pageSize < 1) ? 0 : (int) Math.Ceiling(totalEventsNumber / (double) pageSize);
-            var pagitatedResponseDto = new PaginatedResponse<EventDto>(
+            return new PaginatedResponse<EventDto>(
                 _mapper.Map<IEnumerable<EventDto>>(events),
                 paginationQuery.PageNumber,
                 totalPages,
                 totalEventsNumber
             );
-            return _mapper.Map<PaginatedResponse<EventDto>>(pagitatedResponseDto);
         }
 
         public async Task<EventDto> GetEventAsync(Guid id)
@@ -60,11 +59,7 @@ namespace MagicEvents.Api.Service.Application.Services
         public async Task<byte[]> GetEventThumbnailAsync(Guid id)
         {
             var @event = await _eventRepository.GetAsync(id);
-            if(@event is null)
-            {
-                return null;
-            }
-            return @event.Thumbnail?.BinaryData;
+            return @event?.Thumbnail?.BinaryData;
         }
 
         private static void ValidatePaginationQuery(PaginationQueryDto paginationQuery, long totalEventsNumber)
