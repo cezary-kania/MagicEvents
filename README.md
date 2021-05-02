@@ -77,7 +77,7 @@ $ dotnet user-secrets set MongoDbSettings:ConnectionString mongodb://localhost:2
 $ dotnet user-secrets set JwtSettings:Secret super_secret_key_123!
 ```
 ## Tests
-There are 97 integration tests and 22 unit tests. I'm still working on it - as soon as possible, I'll cover much more code with unit tests.
+There are 97 integration tests and 36 unit tests. I'm still working on it - as soon as possible, I'll cover much more code with unit tests.
 
 
 ## Usage
