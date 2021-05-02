@@ -21,5 +21,7 @@ jobs:
       run: dotnet restore MagicEvents.Api.Service/src/MagicEvents.Api.Service.Api/MagicEvents.Api.Service.Api.csproj
     - name: Build
       run: dotnet build --no-restore MagicEvents.Api.Service/src/MagicEvents.Api.Service.Api/MagicEvents.Api.Service.Api.csproj
-    - name: Test
+    - name: Run integation tests
       run: dotnet test --verbosity normal MagicEvents.Api.Service/tests/MagicEvents.Api.Service.IntegrationTests/MagicEvents.Api.Service.IntegrationTests.csproj
+    - name: Run unit tests
+      run: dotnet test --verbosity normal MagicEvents.Api.Service/tests/MagicEvents.Api.Service.UnitTests/MagicEvents.Api.Service.UnitTests.csproj

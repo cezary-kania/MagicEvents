@@ -34,7 +34,7 @@ Have you ever wanted to create event management system? You can treat this repos
 ***
 ## Requirements
 * ##### **Docker (Tested on Docker Desktop - versions 20.10.2 and 19.03.13)** 
-* ##### **Dotnet SDK (5.0.+)** *(required only if you want run unit and integration tests)*
+* ##### **Dotnet SDK (5.0.+)** *(required only if you want run unit and integration tests or build solution without docker)*
 ***
 ## Building and running solution
 
