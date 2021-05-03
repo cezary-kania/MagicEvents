@@ -1,0 +1,44 @@
+@model IEnumerable<MagicEvents.WebUI.Service.Models.Events.EventViewModel>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<div class="container">
+    <h1 class="display-6">List of events</h1>
+    <table>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(x => x.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Organizer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.StartsAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.EndsAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Status)
+            </th>
+        </tr>
+        @foreach(var evt in Model)
+        {
+            <tr data-id="@evt.Id">
+                <td>@evt.Title</td>
+                <td>@evt.Organizer</td>
+                <td>@evt.Description</td>
+                <td>@evt.StartsAt</td>
+                <td>@evt.EndsAt</td>
+                <td>@evt.Status</td>
+            </tr>
+        }
+    </table>
+</div>
+
+
