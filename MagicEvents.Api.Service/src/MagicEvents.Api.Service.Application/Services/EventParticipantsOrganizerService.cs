@@ -116,6 +116,8 @@ namespace MagicEvents.Api.Service.Application.Services
             user.AddToActivities(eventId, UserEventRole.StandardParticipant,
                 EventActivityStatus.Active);
             @event.AddParticipant(coOrganizerId, UserEventRole.StandardParticipant);
+            await _userRepository.UpdateAsync(user);
+            await _eventRepository.UpdateAsync(@event);
         }
 
         private async Task<User> TryGetUser(Guid userId)
